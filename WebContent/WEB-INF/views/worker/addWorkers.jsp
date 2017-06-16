@@ -27,20 +27,21 @@
 	<div class="layer" style="margin-left: 30%;">
 		<div class="addform" style="float: left;">
 		<h2><b>Information</b></h2>
+		<h5><strong style="color: red;">* 항목은 필수 입력 입니다.</strong></h5>
 			<div>
-				<label>PW</label>
+				<label>* PW</label>
 				<input type="password" class="form-control" style="width: 40%;" name="im_pw" id="chkpw">
 			</div>
 			<div>
-				<label>PW(Confirm)</label>
+				<label>* PW(Confirm)</label>
 				<input type="password" class="form-control" style="width: 40%;" id="confirmpw">
 			</div>
 			<div>
-				<label>Name</label>
+				<label>* Name</label>
 				<input type="text" class="form-control" style="width: 40%;" name="im_name" id="chkname">
 			</div>
 			<div>
-				<label>Social Num</label>
+				<label>* Social Num</label>
 				<div class="row">
 				  <div class="col-xs-3">
 				    <input type="text" class="form-control" placeholder="앞 자리" id="snumF">
@@ -52,7 +53,7 @@
 				</div>
 			</div>
 			<div>
-				<label>Phone</label>
+				<label>* Phone</label>
 				<div class="row">
 				  <div class="col-xs-2">
 				    <input type="text" class="form-control" placeholder="010" id="sphone" style="width: 80%">
@@ -67,11 +68,11 @@
 				</div>
 			</div>
 			<div>
-				<label>E-mail</label>
+				<label>* E-mail</label>
 				<input type="email" class="form-control" name="im_email" id="chkemail" style="width: 50%">
 			</div>
 			<div>
-				<label>Address</label>
+				<label>* Address</label>
 				<br>
 				<input type="text" id="postcode" style="width: 30%" placeholder="우편번호" name="im_postcode" readonly="readonly">
 				<a href="#none" class="btn btn-default" style="width: 20%" id="findaddr">우편번호찾기</a>
@@ -80,7 +81,7 @@
 				<input type="text"  class="form-control" id="detailaddress" style="width: 50%" placeholder="상세 주소" name="im_detailaddr">
 			</div>
 			<div class="chkbox">
-				<label>Language</label>
+				<label>* Language</label>
 				<br>
 				<input type="checkbox" value="Java" name="chklang" class="chklang">&nbsp;Java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="checkbox" value="jQuery" name="chklang" class="chklang">&nbsp;jQuery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -115,7 +116,7 @@
 				<input type="checkbox" value="SQLp" name="chklicense" class="chklicense">&nbsp;SQLp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
 			<div id="selectDep">
-				<label>Department</label>
+				<label>* Department</label>
 				<select class="form-control" style="width: 30%;" name="im_dname">
 					<option value="대표이사">대표이사</option>
 					<option value="전무이사">전무이사</option>
@@ -131,7 +132,7 @@
 				
 			</div>
 			<div>
-				<label>Authority</label>
+				<label>* Authority</label>
 				<select class="form-control" style="width: 30%;" name="im_auth">
 						<option selected="selected" value="0">Developer</option>
 						<option value="1">Manager</option>

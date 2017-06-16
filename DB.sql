@@ -18,6 +18,9 @@ DROP SEQUENCE PROJECT_LIST_SEQ;
 -- 7. ICAN_PROJECT_JOIN_LIST (프로젝트 참여)
 DROP TABLE ICAN_PROJECT_JOIN_LIST CASCADE CONSTRAINTS;
 DROP SEQUENCE PROJECT_JOIN_SEQ;
+
+SHOW PARAMETER UNDO;
+
 -----------------------------------DROP ---------------------------------------------------------
 -----------------------------------DROP ---------------------------------------------------------
 -----------------------------CREATE TABLE -----------------------------------------------------------
@@ -34,6 +37,7 @@ CREATE TABLE ICAN_MEMBER(
     IM_STATUS NUMBER(1) NOT NULL, -- 현재 상태
     IM_SCNUM VARCHAR2(100) NOT NULL, -- 주민등록번호
     IM_ADDRESS VARCHAR2(200) NOT NULL, -- 집주소
+    IM_DETAILADDR VARCHAR2(200) NOT NULL, -- 상세주소
     IM_POSTCODE VARCHAR2(200) NOT NULL, -- 우편 번호
     IM_AUTH NUMBER(1) NOT NULL -- 직책, 직위, 직급 
 );
@@ -45,8 +49,8 @@ ALTER TABLE ICAN_MEMBER ADD CONSTRAINT UK_IM_SCNUM UNIQUE (IM_SCNUM); -- 주민�
 CREATE SEQUENCE MEMBER_SEQ START WITH 1001 INCREMENT BY 1; -- 사번 1001 부터 시작
 
 -- 임의 데이터 넣기
-INSERT INTO ICAN_MEMBER(IM_IDX, IM_PW, IM_DNAME, IM_NAME, IM_PHONE, IM_EMAIL, IM_RESIGN, IM_STATUS, IM_SCNUM, IM_ADDRESS, IM_POSTCODE, IM_AUTH) 
-VALUES(MEMBER_SEQ.NEXTVAL, '1111', '관리부','이일동','010-0000-0000', 'AAA1@MAIL.COM', 0, 0, '888888-1000000', '서울시 구로구','232-34',1);
+INSERT INTO ICAN_MEMBER(IM_IDX, IM_PW, IM_DNAME, IM_NAME, IM_PHONE, IM_EMAIL, IM_RESIGN, IM_STATUS, IM_SCNUM, IM_ADDRESS,IM_DETAILADDR,IM_POSTCODE, IM_AUTH) 
+VALUES(MEMBER_SEQ.NEXTVAL, '1111', '관리부','이일동','010-0000-0000', 'AAA1@MAIL.COM', 0, 0, '888888-1000000', '서울시 구로구','상세구로구','232-34',1);
 
 SELECT * FROM ICAN_MEMBER;
 COMMIT;
@@ -59,12 +63,13 @@ CREATE TABLE ICAN_MEM_EXP(
     IME_REGI_DATE DATE NOT NULL, -- 입사일
     IME_EXIT_DATE DATE, -- 퇴사일
     IME_CONAME VARCHAR2(100) NOT NULL, -- 회사명
-    IME_AUTH NUMBER(1) NOT NULL -- 직책
+    IME_AUTH NUMBER(1) NOT NULL, -- 직책
+    IME_ROLL VARCHAR2(200) NOT NULL -- 역할
 );
 ALTER TABLE ICAN_MEM_EXP ADD CONSTRAINT FK_IME_IM_IDX FOREIGN KEY(IME_IM_IDX) REFERENCES ICAN_MEMBER(IM_IDX);
 ---- 임의의 데이터 받기
 INSERT INTO ICAN_MEM_EXP
-VALUES(1001, SYSDATE, NULL, '아이캔매니지먼트(주)', 1);
+VALUES(1001, SYSDATE, NULL, '아이캔매니지먼트(주)', 1,'미배정');
 -- 3.  사원 자격증 관리 TABLE
 -------------------------------------3 . ICAN_MEM_LICENSE -------------------------------------------------
 CREATE TABLE ICAN_MEM_LICENSE(
@@ -72,10 +77,12 @@ CREATE TABLE ICAN_MEM_LICENSE(
     IML_LNAME VARCHAR2(200) NOT NULL
 );
 ALTER TABLE ICAN_MEM_LICENSE ADD CONSTRAINT FK_IML_IM_IDX FOREIGN KEY (IML_IM_IDX) REFERENCES ICAN_MEMBER(IM_IDX);
+INSERT INTO ICAN_MEM_LICENSE(IML_IM_IDX, IML_LNAME)
+VALUES(1001, '정보 처리기사');
 -- 5. ICAN_MEM_SKILL
 -------------------------------------5. ICAN_MEM_SKILL -------------------------------------------------
 CREATE TABLE ICAN_MEM_SKILL(
-    IMS_IS_SCODE VARCHAR2(100) NOT NULL,
+    IMS_IS_SNAME VARCHAR2(100) NOT NULL,
     IMS_IM_IDX NUMBER NOT NULL
 );
 
@@ -84,7 +91,7 @@ ALTER TABLE ICAN_MEM_SKILL ADD CONSTRAINT FK_IMS_IM_IDX FOREIGN KEY (IMS_IM_IDX)
 -- 6. PROJECT SKILL
 -------------------------------------6. ICAN_PROJECT_SKILL -------------------------------------------------
 CREATE TABLE ICAN_PROJECT_SKILL (
-    IPS_IS_SCODE VARCHAR2(100) NOT NULL,
+    IPS_IS_SNAME VARCHAR2(100) NOT NULL,
     IPS_IPL_IDX NUMBER NOT NULL    
 );
 
@@ -95,14 +102,16 @@ CREATE TABLE ICAN_PROJECT_LIST(
 	IPL_IDX NUMBER NOT NULL, -- 프로젝트 번호(PRIMARY KEY)    
 	IPL_PANME VARCHAR2(50) NOT NULL, --프로젝트 명
 	IPL_SDATE DATE NOT NULL, -- 프로젝트 시작일
-	IPL_EPTDATE DATE NOT NULL, -- 프로젝트 예상 종료일
-	IPL_EDATE DATE NOT NULL, -- 프로젝트 종료일
-	IPL_CONTENT VARCHAR2(400) NOT NULL, -- 프로젝트 내용 설명    
-	IPL_DOC VARCHAR2(100) NOT NULL, -- 프로젝트 문서 파일Name 
+	IPL_EPTDATE DATE, -- 프로젝트 예상 종료일
+	IPL_EDATE DATE, -- 프로젝트 종료일
+	IPL_CONTENT VARCHAR2(400), -- 프로젝트 내용 설명    
+	IPL_DOC VARCHAR2(100), -- 프로젝트 문서 파일Name 
 	IPL_CHARGE VARCHAR2(50) NOT NULL, -- 책임자
 	IPL_CLIENT VARCHAR2(100) NOT NULL, -- 고객사
-	IPL_LOC VARCHAR2(100) NOT NULL, -- 프로젝트 서비스 지역
-	IPL_REQ_NUM NUMBER NOT NULL	 -- 프로젝트 참여 인원 수
+	IPL_ADDRESS VARCHAR2(100) NOT NULL, -- 프로젝트 서비스 지역
+    IPL_DETAILADDR VARCHAR2(200) NOT NULL, -- 서비스 지역 상세 주소
+    IPL_POSTCODE VARCHAR2(100) NOT NULL, --서비스 지역 우편번호
+	IPL_REQ_NUM NUMBER	 -- 프로젝트 참여 인원 수
 ); 
 ALTER TABLE ICAN_PROJECT_LIST ADD CONSTRAINT PK_IPL_IDX PRIMARY KEY(IPL_IDX);
 ALTER TABLE ICAN_PROJECT_SKILL ADD CONSTRAINT FK_IPS_IPN_IDX FOREIGN KEY (IPS_IPL_IDX) REFERENCES ICAN_PROJECT_LIST(IPL_IDX); ---------------프로젝트 스킬
@@ -206,3 +215,121 @@ commit;
 --. SKILL TABLE
 --DROP TABLE ICAN_SKILL CASCADE CONSTRAINTS;
 --DROP SEQUENCE SKILL_SEQ;
+
+--SELECT IM_IDX, IM_NAME, IM_DNAME, IM_PHONE, IM_EMAIL, IM_AUTH, IM_STATUS "
+--          		+ " FROM (SELECT ROW_NUMBER() OVER (ORDER BY IM_IDX) AS RNUM, IMB.IM_IDX ,IMB.IM_NAME ,IDP.ID_DNAME, IMB.IM_PHONE, IMB.IM_EMAIL, IMB.IM_SRANK, IMB.IM_AUTH, IMB.IM_STATUS"
+--          		+ " FROM ICAN_MEMBER IMB INNER JOIN ICAN_DEP IDP "
+--          		+ " ON IMB.IM_DCODE = IDP.ID_DCODE "
+--          		+ " WHERE IMB.IM_RESIGN = 0) "
+--          		+ " WHERE RNUM BETWEEN ? AND ? ";
+                
+ SELECT IM_IDX, IM_NAME, IM_DNAME, IM_PHONE, IM_EMAIL, IM_AUTH, IM_STATUS 
+ FROM (
+    SELECT ROW_NUMBER() OVER (ORDER BY IM_IDX) AS RNUM, IM_IDX, IM_NAME, IM_DNAME, IM_PHONE, IM_EMAIL, IM_AUTH, IM_STATUS
+    FROM ICAN_MEMBER
+    WHERE IM_RESIGN = 0)
+WHERE RNUM BETWEEN 1 AND 15 ;
+
+-------- 경력 계산기 -------------------------
+SELECT TRUNC(DATETERM / 12) , TRUNC (MONTHS_BETWEEN (SYSDATE , ADD_MONTHS ( MINDATE , 12 * TRUNC( DATETERM / 12))))
+FROM ( SELECT MIN(IME_REGI_DATE) AS MINDATE ,MONTHS_BETWEEN (SYSDATE, MIN(IME_REGI_DATE)) AS DATETERM FROM ICAN_MEM_EXP WHERE IME_IM_IDX = '1002');
+--------------------------------------------
+
+--SELECT IM_IDX, IM_NAME, IM_DNAME, IM_PHONE, IM_EMAIL, IM_AUTH, IM_STATUS 
+-- FROM (
+--    SELECT ROW_NUMBER() OVER (ORDER BY IM_IDX) AS RNUM, IM_IDX, IM_NAME, IM_DNAME, IM_PHONE, IM_EMAIL, IM_AUTH, IM_STATUS
+--    FROM ICAN_MEMBER IM , ICAN_MEM_EXP IME
+--    WHERE IM.IM_RESIGN = 0 )
+--WHERE RNUM BETWEEN 1 AND 15 ;
+SELECT IM_IDX, IM_NAME, IM_DNAME, IM_PHONE , IM_AUTH, IM_STATUS , YEAR#, MONTH#
+FROM(
+    SELECT ROW_NUMBER() OVER (ORDER BY IM_IDX) AS RNUM, IM_IDX, IM_NAME, IM_DNAME, IM_PHONE, IM_AUTH, IM_STATUS, TRUNC(DATETERM / 12) AS YEAR#, TRUNC(MONTHS_BETWEEN (SYSDATE, ADD_MONTHS (MINDATE, 12 * TRUNC (DATETERM / 12)))) AS MONTH#
+    FROM ICAN_MEMBER IM LEFT JOIN (SELECT IME_IM_IDX, MIN(IME_REGI_DATE) AS MINDATE ,MONTHS_BETWEEN (SYSDATE, MIN(IME_REGI_DATE)) AS DATETERM FROM ICAN_MEM_EXP group by IME_IM_IDX) IME
+    ON IM.IM_IDX = IME.IME_IM_IDX
+    WHERE IM_RESIGN = 0)
+WHERE RNUM BETWEEN 1 AND 15 ;
+COMMIT;
+
+SELECT *
+FROM(
+    SELECT ROW_NUMBER() OVER (ORDER BY IM_IDX) AS RNUM, IM_IDX, IM_NAME, IM_DNAME, IM_PHONE, IM_AUTH, IM_STATUS
+    FROM ICAN_MEMBER IM    
+    WHERE IM_RESIGN = 0)
+WHERE RNUM BETWEEN 1 AND 15 ;
+
+
+
+
+SELECT IM_IDX, IM_NAME, IM_DNAME, IM_PHONE , IM_AUTH, IM_STATUS , YEAR#, MONTH# 
+       		  FROM( 
+       		        SELECT 
+       		             ROW_NUMBER() OVER (ORDER BY IM_IDX) AS RNUM, 
+       	             IM_IDX, 
+                  IM_NAME,
+       	            IM_DNAME, 
+       		             IM_PHONE, 
+       		              IM_AUTH, 
+       		             IM_STATUS,
+       		              TRUNC(DATETERM / 12) AS YEAR#, 
+       		             TRUNC(MONTHS_BETWEEN (SYSDATE, ADD_MONTHS (MINDATE, 12 * TRUNC (DATETERM / 12)))) AS MONTH#
+       		 	  FROM 
+       		            ICAN_MEMBER IM LEFT JOIN (
+       		                                       SELECT 
+       		                                               IME_IM_IDX,
+       		                                              MIN(IME_REGI_DATE) AS MINDATE, 
+       		                                              MONTHS_BETWEEN (SYSDATE, MIN(IME_REGI_DATE)) AS DATETERM 
+       		                                       FROM ICAN_MEM_EXP group by IME_IM_IDX 
+       		                                      ) IME
+                          ON IM.IM_IDX = IME.IME_IM_IDX                         
+       		       WHERE 
+       		              IM_RESIGN = 0 
+       		       )
+       		 WHERE RNUM BETWEEN 1 AND 15 ;
+SELECT * FROM ICAN_MEMBER WHERE IM_IDX = '1005';
+SELECT * FROM ICAN_MEM_SKILL WHERE IMS_IM_IDX = '1005';
+SELECT * FROM ICAN_MEM_EXP WHERE IME_IM_IDX = '1005';
+SELECT * FROM ICAN_MEM_LICENSE WHERE IML_IM_IDX = '1005';
+SELECT * FROM ICAN_PROJECT_JOIN_LIST WHERE IPJL_IM_IDX = '1005';
+SELECT IME_REGI_DATE FROM ICAN_MEM_EXP WHERE IME_IM_IDX = '1009' AND IME_EXIT_DATE IS NULL;
+SELECT * FROM ICAN_MEM_EXP;
+commit;
+
+--sql = " SELECT IM_IDX, IM_NAME, IM_DNAME, IM_PHONE , IM_AUTH, IM_STATUS , YEAR#, MONTH# "
+--       		+ " FROM( "
+--       		+ "       SELECT "
+--       		+ "              ROW_NUMBER() OVER (ORDER BY IM_IDX) AS RNUM, "
+--       		+ "              IM_IDX, "
+--       		+ "              IM_NAME, "
+--       		+ "              IM_DNAME, "
+--       		+ "              IM_PHONE, "
+--       		+ "              IM_AUTH, "
+--       		+ "              IM_STATUS, "
+--       		+ "              TRUNC(DATETERM / 12) AS YEAR#, "
+--       		+ "              TRUNC(MONTHS_BETWEEN (SYSDATE, ADD_MONTHS (MINDATE, 12 * TRUNC (DATETERM / 12)))) AS MONTH#"
+--       		+ "  	  FROM "
+--       		+ "             ICAN_MEMBER IM LEFT JOIN ("
+--       		+ "                                       SELECT "
+--       		+ "                                               IME_IM_IDX,"
+--       		+ "                                               MIN(IME_REGI_DATE) AS MINDATE, "
+--       		+ "                                               MONTHS_BETWEEN (SYSDATE, MIN(IME_REGI_DATE)) AS DATETERM "
+--       		+ "                                       FROM ICAN_MEM_EXP group by IME_IM_IDX "
+--       		+ "                                       ) IME"
+--       		+ "              ON IM.IM_IDX = IME.IME_IM_IDX "
+--       		+ "       WHERE "
+--       		+ "               IM_RESIGN = 0 "
+--       		+ "       )"
+--       		+ " WHERE RNUM BETWEEN ? AND ? ";
+
+COMMIT;
+SELECT * FROM ICAN_MEM_LICENSE WHERE IML_IM_IDX = 1001;
+SELECT * FROM ICAN_MEM_EXP WHERE IME_IM_IDX = 1001 AND IME_EXIT_DATE IS NOT NULL;
+
+SELECT * FROM ICAN_MEMBER WHERE IM_IDX = 1009;
+UPDATE ICAN_MEMBER SET IM_RESIGN = 1 WHERE IM_IDX = 1009; -- MEMBER UPDATE
+
+SELECT * FROM ICAN_MEM_EXP WHERE IME_IM_IDX = 1009 AND IME_EXIT_DATE IS NULL;
+UPDATE ICAN_MEM_EXP SET IME_EXIT_DATE = SYSDATE WHERE IME_IM_IDX = 1009 AND IME_EXIT_DATE IS NULL; -- MEMBER ICAN SYSDATE UPDATE
+COMMIT;
+
+SELECT * FROM ICAN_MEMBER;
+UPDATE ICAN_MEM_EXP SET IME_EXIT_DATE = SYSDATE WHERE IME_IM_IDX = 1007 AND IME_EXIT_DATE IS NULL;
