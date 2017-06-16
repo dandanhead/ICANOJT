@@ -190,16 +190,17 @@ $("#addbtn").click(function() {
 	function isValidDate(snumF, snumE) {
         try
         {
-            var tempnum = Number(snumE.substring(0, 1));
+            var tempnum = Number(snumE.substring(0, 1)); //성별, 19xx, 20xx 년생 확인  1,2,3,4...
+            
         	if(tempnum > 2){
         		snumF = "20"+snumF;
         	}else{
         		snumF = "19"+snumF;
         	}
         	
-            var year = Number(snumF.substring(0, 4));
-            var month = Number(snumF.substring(4, 6));
-            var day = Number(snumF.substring(6, 8));
+            var year = Number(snumF.substring(0, 4)); // 1985
+            var month = Number(snumF.substring(4, 6)); // 05	
+            var day = Number(snumF.substring(6, 8)); // 29
  
             var dd = day / 0;
             // 월 체크
@@ -219,8 +220,8 @@ $("#addbtn").click(function() {
                 return false;
             }
             // 뒷자리 체크(주민번호 유효성)
-            var sumNum = snumF + snumE;
-            sumNum = sumNum.substring(2, 15);
+            var sumNum = snumF + snumE; // ex)198505291839190
+            sumNum = sumNum.substring(2, 15); 
             var maxlength = sumNum.length;
             var lastnum = sumNum.charAt(maxlength -1);
             var result = 0;

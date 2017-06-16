@@ -169,6 +169,7 @@
 </form>
 </body>
 <script>
+//주소 API
 $("#findaddr").click(function() {
 	new daum.Postcode({
         oncomplete: function(data) {

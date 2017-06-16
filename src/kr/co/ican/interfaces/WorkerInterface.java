@@ -13,6 +13,7 @@ import kr.co.ican.vo.MemberVO;
 import kr.co.ican.vo.ProjectVO;
 
 public interface WorkerInterface {
+	
 	//Unique key Checker
 	public boolean chkDuplicate(MemberVO mvo);
 	

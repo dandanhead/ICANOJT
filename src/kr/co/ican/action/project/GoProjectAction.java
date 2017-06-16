@@ -14,6 +14,8 @@ public class GoProjectAction implements CommandAction{
 		
 		String ns = kr.co.ican.help.Helps.NS; //Name Space
 		request.setCharacterEncoding("UTF-8"); // utf-8 charset
+		//DAO 에서 리스트 가져오기
+		
 		
 		return ns+"project/projectManage.jsp";
 	}
