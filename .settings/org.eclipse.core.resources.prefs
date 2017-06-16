@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/views/layout/bootstrap.jsp=UTF-8
+encoding//WebContent/WEB-INF/views/layout/header.jsp=UTF-8
+encoding//WebContent/WEB-INF/views/login/doLogout.jsp=UTF-8

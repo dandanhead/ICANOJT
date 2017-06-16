@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="OJT Project_Lee Seok Hee">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <property name="context-root" value="OJT_Project_Lee_Seok_Hee"/>
+        <property name="java-output-path" value="/OJT Project_Lee Seok Hee/build/classes"/>
+    </wb-module>
+</project-modules>
