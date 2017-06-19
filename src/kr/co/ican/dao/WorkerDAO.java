@@ -7,14 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import kr.co.ican.dbconn.GetDBConn;
-import kr.co.ican.interfaces.WorkerInterface;
 import kr.co.ican.vo.ExperienceVO;
 import kr.co.ican.vo.MemLicenseVO;
-import kr.co.ican.vo.MemSkillVO;
 import kr.co.ican.vo.MemberVO;
 import kr.co.ican.vo.ProjectVO;
 
-public class WorkerDAO implements WorkerInterface{
+public class WorkerDAO {
 	
 	private static WorkerDAO wdao;
 
@@ -28,30 +26,7 @@ public class WorkerDAO implements WorkerInterface{
 		return wdao;
 	}
 
-	@Override
-	public boolean addWorkerSkill(MemSkillVO msvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
-		
-		 String sql = "";
-	        int cnt = 1;
-	        int result = 0;
-	        
-	        try {
-				sql = " INSERT INTO ICAN_MEM_SKILL(IMS_IS_SNAME, IMS_IM_IDX) VALUES( ?, MEMBER_SEQ.CURRVAL ) ";
-				
-				psmt = conn.prepareStatement(sql);
-				psmt.setString(cnt++, msvo.getIms_is_sname());
-				
-				result = psmt.executeUpdate();
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
-	        
-			return result > 0 ? true : false;
-	}
 
-	@Override
 	public boolean addWorkerExp(ExperienceVO evo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 			String sql = "";
 	        int cnt = 1;
@@ -78,7 +53,6 @@ public class WorkerDAO implements WorkerInterface{
 			return result > 0 ? true : false;
 	}
 
-	@Override
 	public boolean basicWorkerExp(MemberVO mvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 			String sql = "";
 	        int cnt = 1;
@@ -108,18 +82,19 @@ public class WorkerDAO implements WorkerInterface{
 			return result > 0 ? true : false;
 	}
 
-	@Override
 	public boolean addWorkerLicense(MemLicenseVO mlvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 		 String sql = "";
 	        int cnt = 1;
 	        int result = 0;
 	        try {
-				sql = " INSERT INTO ICAN_MEM_LICENSE(IML_IM_IDX, IML_LNAME) "
-					+ " VALUES( MEMBER_SEQ.CURRVAL , ? ) ";
+				sql = " INSERT INTO ICAN_MEM_LICENSE ( IML_IM_IDX, IML_LNAME , IML_ACUDATE, IML_ORGANIZATION ) "
+					+ " VALUES( MEMBER_SEQ.CURRVAL , ? , ? , ?) ";
 				
 				
 				psmt = conn.prepareStatement(sql);
 				psmt.setString(cnt++, mlvo.getIml_lname());
+				psmt.setString(cnt++, mlvo.getIml_acudate());
+				psmt.setString(cnt++, mlvo.getIml_organization());
 				
 				result = psmt.executeUpdate();
 				
@@ -130,7 +105,6 @@ public class WorkerDAO implements WorkerInterface{
 			return result > 0 ? true : false;
 	}
 
-	@Override
 	public boolean chkDuplicate(MemberVO mvo) {
 		
 		Connection conn = null;
@@ -164,7 +138,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false ;
 	}
 
-	@Override
 	public List<MemberVO> getWorkerList(MemberVO mvo) throws SQLException{
 		
 		Connection conn = null;
@@ -230,7 +203,6 @@ public class WorkerDAO implements WorkerInterface{
 	
 	}
 	
-	@Override
 	public int getWorkerCount(MemberVO mvo) throws SQLException {
 		
 		Connection conn = null;
@@ -253,14 +225,13 @@ public class WorkerDAO implements WorkerInterface{
         return result;
 	}
 
-	@Override
 	public boolean addWorkerInfo(MemberVO mvo , Connection conn, PreparedStatement psmt, ResultSet rs) { // 사원 기본정보 넣기
         String sql = "";
         int cnt = 1;
         int result = 0;
         try {
-			sql = " INSERT INTO ICAN_MEMBER(IM_IDX, IM_PW, IM_DNAME, IM_NAME, IM_PHONE, IM_EMAIL, IM_RESIGN, IM_STATUS, IM_SCNUM, IM_ADDRESS, IM_DETAILADDR, IM_POSTCODE, IM_AUTH) "
-				 +" VALUES(MEMBER_SEQ.NEXTVAL, ? , ? , ? , ? , ? , 0 , 0 , ? , ? , ? , ? , ?)";
+			sql = " INSERT INTO ICAN_MEMBER(IM_IDX, IM_PW, IM_DNAME, IM_NAME, IM_PHONE, IM_EMAIL, IM_RESIGN, IM_STATUS, IM_SCNUM, IM_ADDRESS, IM_DETAILADDR, IM_POSTCODE, IM_AUTH, IM_SKILL) "
+				 +" VALUES(MEMBER_SEQ.NEXTVAL, ? , ? , ? , ? , ? , 0 , 0 , ? , ? , ? , ? , ? , ?)";
 			
 			psmt = conn.prepareStatement(sql);
 			
@@ -274,6 +245,7 @@ public class WorkerDAO implements WorkerInterface{
 			psmt.setString(cnt++, mvo.getIm_detailaddr());
 			psmt.setString(cnt++, mvo.getIm_postcode());
 			psmt.setInt(cnt++, mvo.getIm_auth()); // 직급
+			psmt.setString(cnt++, mvo.getIm_skill()); //스킬
 			
 			result = psmt.executeUpdate();
 
@@ -285,7 +257,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false;
 	}
 
-	@Override
 	public MemberVO getMemberDetail(MemberVO mvo) {
 		
 		Connection conn = null;
@@ -330,46 +301,6 @@ public class WorkerDAO implements WorkerInterface{
 		return mvo;
 	}
 
-	@Override
-	public List<MemSkillVO> getMemberSkills(MemSkillVO svo) {
-		
-
-		Connection conn = null;
-		PreparedStatement psmt = null;
-        ResultSet rs = null;
-        String sql = "";
-        int cnt = 1;
-        List<MemSkillVO> mslist = new ArrayList<MemSkillVO>();
-        
-        try {
-			conn = GetDBConn.getConnection();
-			sql = " SELECT * FROM ICAN_MEM_SKILL WHERE IMS_IM_IDX = ? ";
-			psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, svo.getIms_im_idx());
-			
-			rs = psmt.executeQuery();
-			
-			while (rs.next()) {
-				cnt = 1;
-				MemSkillVO msvo = new MemSkillVO();
-				msvo.setIms_is_sname(rs.getString(cnt++));
-				msvo.setIms_im_idx(rs.getInt(cnt++));
-				mslist.add(msvo);
-				
-			}
-			
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-			
-		}finally {
-			GetDBConn.close(conn, psmt, rs);
-		}
-		
-		return mslist;
-	}
-
-	@Override
 	public List<MemLicenseVO> getMemberLicenses(MemLicenseVO licvo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -405,7 +336,6 @@ public class WorkerDAO implements WorkerInterface{
 		return liclist;
 	}
 
-	@Override
 	public String getRegiDate(MemberVO mvo) {
 		
 		Connection conn = null;
@@ -438,7 +368,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result;
 	}
 
-	@Override
 	public List<ExperienceVO> getMemberExperiences(ExperienceVO evo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -485,7 +414,6 @@ public class WorkerDAO implements WorkerInterface{
 		return elist;
 	}
 	
-	@Override
 	public int getTotalHistory(ExperienceVO evo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -514,7 +442,6 @@ public class WorkerDAO implements WorkerInterface{
         return result;
 	}
 	
-	@Override
 	public boolean mailDuplChk(MemberVO mvo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -545,7 +472,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false ;
 	}
 
-	@Override
 	public boolean phoneDuplChk(MemberVO mvo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -577,7 +503,6 @@ public class WorkerDAO implements WorkerInterface{
 	}
 
 	
-	@Override
 	public boolean updateWorkerInfo(MemberVO mvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 		String sql = "";
         int cnt = 1;
@@ -606,48 +531,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false;
 	}
 	
-	@Override
-	public boolean preupdateWorkerSkill(MemSkillVO msvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
-		String sql = "";
-        int cnt = 1;
-        int result = 0;
-        try {
-        	
-			sql = " DELETE FROM ICAN_MEM_SKILL WHERE IMS_IM_IDX = ? ";
-			
-			psmt = conn.prepareStatement(sql);
-			psmt.setInt(cnt++, msvo.getIms_im_idx());
-			
-			result = psmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return result > 0 ? true : false;
-	}
-	@Override
-	public boolean updateWorkerSkill(MemSkillVO msvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
-		String sql = "";
-        int cnt = 1;
-        int result = 0;
-        try {
-			sql = " INSERT INTO ICAN_MEM_SKILL(IMS_IS_SNAME, IMS_IM_IDX) VALUES( ?, ? ) ";
-			
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(cnt++, msvo.getIms_is_sname());
-			psmt.setInt(cnt++, msvo.getIms_im_idx());
-			
-			result = psmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return result > 0 ? true : false;
-	}
-
-	@Override
 	public boolean updateWorkerExp(ExperienceVO evo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 		String sql = "";
         int cnt = 1;
@@ -674,7 +557,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false;
 	}
 
-	@Override
 	public boolean updateWorkerLicense(MemLicenseVO mlvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 		 String sql = "";
 	        int cnt = 1;
@@ -699,7 +581,6 @@ public class WorkerDAO implements WorkerInterface{
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@Override
 	public boolean preupdateWorkerExp(ExperienceVO evo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 		String sql = "";
         int cnt = 1;
@@ -719,7 +600,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false;
 	}
 
-	@Override
 	public boolean preupdateWorkerLicense(MemLicenseVO mlvo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 		String sql = "";
         int cnt = 1;
@@ -742,7 +622,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false;
 	}
 	
-	@Override
 	public boolean chkExistLicence(MemLicenseVO mlvo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -773,7 +652,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false ;
 	}
 
-	@Override
 	public boolean chkExistExp(ExperienceVO evo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -804,7 +682,6 @@ public class WorkerDAO implements WorkerInterface{
 		return result > 0 ? true : false ;
 	}
 
-@Override
 	public boolean resignWorker(MemberVO mvo) {
 		
 		Connection conn = null;
@@ -859,7 +736,6 @@ public class WorkerDAO implements WorkerInterface{
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	@Override
 	public List<ProjectVO> getMemberProjects(ProjectVO pvo) {
 		//TODO 아직안만들었어요!!
 		return null;

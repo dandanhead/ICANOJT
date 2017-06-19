@@ -11,17 +11,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import kr.co.ican.dao.WorkerDAO;
 import kr.co.ican.dbconn.GetDBConn;
+import kr.co.ican.services.WorkerServiceImpl;
 import kr.co.ican.vo.ExperienceVO;
 import kr.co.ican.vo.MemLicenseVO;
-import kr.co.ican.vo.MemSkillVO;
 import kr.co.ican.vo.MemberVO;
 
 @WebServlet("/updateWorker")
 public class WorkerUpdateAfterAction extends HttpServlet{
 
+	private WorkerServiceImpl workerservice = WorkerServiceImpl.getInstance();
+	
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -37,12 +37,10 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 	private void updateWorkerInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		
 		request.setCharacterEncoding("UTF-8"); // utf-8 charset
-		WorkerDAO wdao = WorkerDAO.getInstance(); // 생성
 		
 		//vo 생성
 		MemberVO mvo = new MemberVO(); // 사원 정보VO
 		ExperienceVO evo = new ExperienceVO(); // 사원 경력 VO
-		MemSkillVO msvo = new MemSkillVO(); // 사원 스킬 VO
 		MemLicenseVO mlvo = new MemLicenseVO(); //사원 자격증 VO
 		
 		// 기본사항 
@@ -86,11 +84,11 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 		mvo.setIm_dname(im_dname);
 		mvo.setIm_auth(Integer.parseInt(im_auth));
 		
-		msvo.setIms_im_idx(memidx);
+//		msvo.setIms_im_idx(memidx);
 		mlvo.setIml_im_idx(memidx);
 		evo.setIme_im_idx(memidx);
 		
-		//DAO////////////////////////////////////
+		//workerservice////////////////////////////////////
 		//insert
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -114,18 +112,18 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 			// transaction start
 			conn.setAutoCommit(false);
 			//1 . 기본 정보 추가
-			infoFlag = wdao.updateWorkerInfo(mvo, conn, psmt, rs);
+			infoFlag = workerservice.updateWorkerInfo(mvo, conn, psmt, rs);
 			System.out.println("1.기본 정보 추가");
 			//2. 스킬 집어넣기
 			if("1".equals(changeskill)){
 				// 스킬 지우고
-				skilldel = wdao.preupdateWorkerSkill(msvo, conn, psmt, rs); ////////////// 쿼리 
+//				skilldel = workerservice.preupdateWorkerSkill(msvo, conn, psmt, rs); ////////////// 쿼리 
 				System.out.println("스킬이 바뀌었으니 스킬을 지우고");
 				for (int idx = 0; idx < chklang.length; idx++) {
 					// 스킬 체크 만큼 insert
 					String ims_is_sname = chklang[idx].trim();
-					msvo.setIms_is_sname(ims_is_sname);
-					updskill = wdao.updateWorkerSkill(msvo, conn, psmt, rs); ////////////////// 쿼리 
+//					msvo.setIms_is_sname(ims_is_sname);
+//					updskill = workerservice.updateWorkerSkill(msvo, conn, psmt, rs); ////////////////// 쿼리 
 					System.out.println("새로운 스킬을 insert 반복!");
 					if(!updskill || !skilldel){
 						break;
@@ -138,10 +136,10 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 			//3. 자격증 집어넣기
 			if("1".equals(changlic)){
 				//자격증 있는지 체크
-				boolean exsitLicense = wdao.chkExistLicence(mlvo);
+				boolean exsitLicense = workerservice.chkExistLicence(mlvo);
 				
 				if(exsitLicense){
-					licdel = wdao.preupdateWorkerLicense(mlvo, conn, psmt, rs); //// 자격증 지우기 쿼리 //////////////////////////
+					licdel = workerservice.preupdateWorkerLicense(mlvo, conn, psmt, rs); //// 자격증 지우기 쿼리 //////////////////////////
 				}else{
 					licdel = true;
 				}
@@ -153,7 +151,7 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 						
 						mlvo.setIml_lname(iml_lname);
 						
-						updlic = wdao.updateWorkerLicense(mlvo, conn, psmt, rs); /////////////// 쿼리 
+						updlic = workerservice.updateWorkerLicense(mlvo, conn, psmt, rs); /////////////// 쿼리 
 						System.out.println("새로운 자격증을 insert 반복!");
 						if(!updlic || !licdel){
 							break;
@@ -171,9 +169,9 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 			// 경력 다 삭제 (현재 회사 빼고)
 			if("1".equals(changexp)){
 				//경력 체크
-				boolean chkExp = wdao.chkExistExp(evo);
+				boolean chkExp = workerservice.chkExistExp(evo);
 				if(chkExp){
-					expdel = wdao.preupdateWorkerExp(evo, conn, psmt, rs); ///////////// 쿼리  delete
+					expdel = workerservice.preupdateWorkerExp(evo, conn, psmt, rs); ///////////// 쿼리  delete
 				}else{
 					expdel = true;
 				}
@@ -186,7 +184,7 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 						evo.setIme_coname(arrconame[idx]);
 						evo.setIme_auth(Integer.parseInt(arrauth[idx].trim()));
 						evo.setIme_roll(arrroll[idx]);
-						expFlag =wdao.updateWorkerExp(evo, conn, psmt, rs); ////////////// 쿼리 
+						expFlag =workerservice.updateWorkerExp(evo, conn, psmt, rs); ////////////// 쿼리 
 						System.out.println("경력넣은 만큼 insert 반복!");
 						if(!expFlag || !expdel){
 							break;

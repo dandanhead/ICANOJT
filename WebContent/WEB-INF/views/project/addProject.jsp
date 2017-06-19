@@ -87,12 +87,6 @@
 					<input type="text" class="form-control" style="width: 40%;" id="charger" name="ipl_charge">
 				</div>
 				<br>
-				<div>
-					<label>Number of Required Persons(Number Only)</label>
-					<input type="text" class="form-control" style="width: 40%;"
-					 onkeydown='return onlyNumber(event)' onkeyup='removeChar(event)' style='ime-mode:disabled;' id="reqnum" name="ipl_req_num">
-				</div>
-				<br>
 				<h2><b>Date</b></h2>
 				<br>
 				<div>
@@ -225,20 +219,32 @@ $("#addProjectBtn").click(function() {
 	var prjtcontent = $.trim($("#prjtcontent").val()); //상세내용
 	var reqnum = $.trim($("#reqnum").val()); // 허용인원
 	var expectdate = $.trim($("#expectdate").val()); // expect end date
-	var projectdoc = $.trim($("#projectdoc").val());
+	var projectdoc = $.trim($("#projectdoc").val()); //파일주소.
+	
 	
 	// 체크박스 개수 확인
  	$("input:checkbox[name='chklang']:checked").each(function() {
 		chknum++;
 	});
-	//파일
-	if(projectdoc == "" || projectdoc == null){
-		alert("파일 선택 안함");
+	
+	if(pname == "" || pname == null){
+		alert("프로젝트명을 입력해 주세요.");
+	}else if(clientname == "" || clientname == null ){
+		alert("고객사를 입력해 주세요.");
+	}else if(postcode == "" || postcode == null || tempaddress == "" || tempaddress == null){
+		alert("서비스 할 지역의 주소를 정확히 입력해 주세요.");
+	}else if(detailaddress == "" || detailaddress == null){
+		alert("상세 주소를 입력해 주세요.");
+	}else if(charger == "" || charger == null){
+		alert("책임자를 입력해 주세요.");
+	}else if(startdate == "" || startdate == null){
+		alert("프로젝트 시작일은 반드시 입력해야 합니다.");
+	}else if(chknum == 0){
+		alert("사용 기술을 하나 이상 체크 해야합니다.");
 	}else{
-		alert(projectdoc);
+		//call controller
+		$("#frm").attr({"target" : "_self" , "action" : "addProjectAf"}).submit();
 	}
-	//call controller
-/* 	$("#frm").attr({"target" : "_self" , "action" : "addProjectAf"}).submit(); */
 });
 </script>
 </html>

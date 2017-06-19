@@ -1,9 +1,9 @@
-package kr.co.ican.interfaces;
+package kr.co.ican.services;
 
 import kr.co.ican.vo.ExperienceVO;
 import kr.co.ican.vo.MemberVO;
 
-public interface MemberInterface {
+public interface MemberService {
 
 	public MemberVO logininfo(MemberVO lvo);
 	public MemberVO findID(MemberVO lvo);

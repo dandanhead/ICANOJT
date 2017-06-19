@@ -4,13 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import kr.co.ican.controller.CommandAction;
-import kr.co.ican.dao.MemberDAO;
+import kr.co.ican.services.MemberServiceImpl;
 import kr.co.ican.vo.ExperienceVO;
 import kr.co.ican.vo.MemberVO;
 
 public class LoginAction implements CommandAction{
 
-	MemberDAO memdao = MemberDAO.getInstance();
+	private MemberServiceImpl memservice = MemberServiceImpl.getInstance();
 	
 	@Override
 	public String requestPro(HttpServletRequest request, HttpServletResponse response) throws Throwable {
@@ -25,7 +25,7 @@ public class LoginAction implements CommandAction{
 		MemberVO vo = new MemberVO();
 		ExperienceVO evo = new ExperienceVO();
 		
-		vo = memdao.logininfo(new MemberVO(idx, getpw));
+		vo = memservice.logininfo(new MemberVO(idx, getpw));
 		
 		if(vo == null){
 			return ns+"login/loginFailed.jsp";
@@ -33,7 +33,7 @@ public class LoginAction implements CommandAction{
 			
 			HttpSession session = request.getSession();
 			
-			evo = memdao.getExperience(vo);
+			evo = memservice.getExperience(vo);
 			
 			session.setAttribute("exp", evo); //입사일 정보 가져오기
 			session.setAttribute("login", vo); // 로그인 정보 세션 저장

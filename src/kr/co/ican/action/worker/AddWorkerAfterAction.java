@@ -5,24 +5,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import kr.co.ican.dao.WorkerDAO;
 import kr.co.ican.dbconn.GetDBConn;
+import kr.co.ican.services.WorkerServiceImpl;
 import kr.co.ican.vo.ExperienceVO;
 import kr.co.ican.vo.MemLicenseVO;
-import kr.co.ican.vo.MemSkillVO;
 import kr.co.ican.vo.MemberVO;
 
 @WebServlet("/adWorkerAfter")
 public class AddWorkerAfterAction extends HttpServlet {
 		
 	private static final long serialVersionUID = 1L;
+	private WorkerServiceImpl workerservice = WorkerServiceImpl.getInstance();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,11 +36,10 @@ public class AddWorkerAfterAction extends HttpServlet {
 	private void addWorkersInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		
 		request.setCharacterEncoding("UTF-8"); // utf-8 charset
-		WorkerDAO wdao = WorkerDAO.getInstance(); // 생성
+		
 		//vo 생성
 		MemberVO mvo = new MemberVO(); // 사원 정보VO
 		ExperienceVO evo = new ExperienceVO(); // 사원 경력 VO
-		MemSkillVO msvo = new MemSkillVO(); // 사원 스킬 VO
 		MemLicenseVO mlvo = new MemLicenseVO(); //사원 자격증 VO
 		// 기본사항 
 		String im_pw = request.getParameter("im_pw"); // 패스워드
@@ -78,7 +75,7 @@ public class AddWorkerAfterAction extends HttpServlet {
 		mvo.setIm_dname(im_dname);
 		mvo.setIm_auth(Integer.parseInt(im_auth));
 		
-		//DAO////////////////////////////////////
+		//workerservice////////////////////////////////////
 		//insert
 		Connection conn = null;
 		PreparedStatement psmt = null;
@@ -96,19 +93,19 @@ public class AddWorkerAfterAction extends HttpServlet {
 			conn.setAutoCommit(false);
 			
 			//1 . 기본 정보 추가
-			infoFlag = wdao.addWorkerInfo(mvo, conn, psmt, rs);
+			infoFlag = workerservice.addWorkerInfo(mvo, conn, psmt, rs);
 			
-			//2. 스킬 집어넣기
-			for (int idx = 0; idx < chklang.length; idx++) {
-				
-				String ims_is_sname = chklang[idx].trim();
-				msvo.setIms_is_sname(ims_is_sname);
-				skillFlag = wdao.addWorkerSkill(msvo,conn, psmt, rs);
-				
-				if(!skillFlag){
-					break;
-				}
-			}
+//			//2. 스킬 집어넣기
+//			for (int idx = 0; idx < chklang.length; idx++) {
+//				
+//				String ims_is_sname = chklang[idx].trim();
+//				msvo.setIms_is_sname(ims_is_sname);
+//				skillFlag = workerservice.addWorkerSkill(msvo,conn, psmt, rs);
+//				
+//				if(!skillFlag){
+//					break;
+//				}
+//			}
 			//3. 자격증 집어넣기
 			if(chklicense != null && chklicense.length > 0 ){
 				liccnt++;
@@ -117,7 +114,7 @@ public class AddWorkerAfterAction extends HttpServlet {
 					String iml_lname = chklicense[idx].trim();
 					mlvo.setIml_lname(iml_lname);
 					
-					licFlag = wdao.addWorkerLicense(mlvo , conn, psmt, rs);
+					licFlag = workerservice.addWorkerLicense(mlvo , conn, psmt, rs);
 					if(!licFlag){
 						break;
 					}
@@ -125,7 +122,7 @@ public class AddWorkerAfterAction extends HttpServlet {
 			}
 			// 4. 현재 회사 경력 추가 하기 
 			// 기본 경력 추가
-			basicFlag = wdao.basicWorkerExp(mvo, conn, psmt, rs);
+			basicFlag = workerservice.basicWorkerExp(mvo, conn, psmt, rs);
 			//4-1 .경력 사항에 따른 처리 (없으면 아이캔 자동생성, 있으면 입력받은거 + 아이캔 자동생성) 
 			if(arrregi != null && arrexit != null && arrconame != null && arrauth != null && arrroll != null){
 				
@@ -139,7 +136,7 @@ public class AddWorkerAfterAction extends HttpServlet {
 					evo.setIme_auth(Integer.parseInt(arrauth[idx].trim()));
 					evo.setIme_roll(arrroll[idx]);
 					
-					expFlag =wdao.addWorkerExp(evo , conn, psmt, rs);
+					expFlag =workerservice.addWorkerExp(evo , conn, psmt, rs);
 					
 					if(!expFlag){
 						break;

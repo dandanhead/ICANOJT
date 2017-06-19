@@ -15,6 +15,7 @@ public class MemberVO {
 	private String im_detailaddr;
 	private String im_postcode;
 	private int im_auth;
+	private String im_skill;
 	//검색
 	private String s_category; 
 	private String s_keyword;
@@ -39,10 +40,12 @@ public class MemberVO {
 		this.im_pw = im_pw;
 	}
 
+	
+
 	public MemberVO(int im_idx, String im_pw, String im_dname, String im_name, String im_phone, String im_email,
 			int im_resign, int im_status, String im_scnum, String im_address, String im_detailaddr, String im_postcode,
-			int im_auth, String s_category, String s_keyword, int recordCountPerPage, int pageNumber, int start,
-			int end, int expYear, int expMonth, String outsideperson) {
+			int im_auth, String im_skill, String s_category, String s_keyword, int recordCountPerPage, int pageNumber,
+			int start, int end, int expYear, int expMonth, String outsideperson) {
 		this.im_idx = im_idx;
 		this.im_pw = im_pw;
 		this.im_dname = im_dname;
@@ -56,6 +59,7 @@ public class MemberVO {
 		this.im_detailaddr = im_detailaddr;
 		this.im_postcode = im_postcode;
 		this.im_auth = im_auth;
+		this.im_skill = im_skill;
 		this.s_category = s_category;
 		this.s_keyword = s_keyword;
 		this.recordCountPerPage = recordCountPerPage;
@@ -65,6 +69,14 @@ public class MemberVO {
 		this.expYear = expYear;
 		this.expMonth = expMonth;
 		this.outsideperson = outsideperson;
+	}
+
+	public String getIm_skill() {
+		return im_skill;
+	}
+
+	public void setIm_skill(String im_skill) {
+		this.im_skill = im_skill;
 	}
 
 	public String getIm_detailaddr() {
@@ -257,10 +269,11 @@ public class MemberVO {
 		return "MemberVO [im_idx=" + im_idx + ", im_pw=" + im_pw + ", im_dname=" + im_dname + ", im_name=" + im_name
 				+ ", im_phone=" + im_phone + ", im_email=" + im_email + ", im_resign=" + im_resign + ", im_status="
 				+ im_status + ", im_scnum=" + im_scnum + ", im_address=" + im_address + ", im_detailaddr="
-				+ im_detailaddr + ", im_postcode=" + im_postcode + ", im_auth=" + im_auth + ", s_category=" + s_category
-				+ ", s_keyword=" + s_keyword + ", recordCountPerPage=" + recordCountPerPage + ", pageNumber="
-				+ pageNumber + ", start=" + start + ", end=" + end + ", expYear=" + expYear + ", expMonth=" + expMonth
-				+ ", outsideperson=" + outsideperson + "]";
+				+ im_detailaddr + ", im_postcode=" + im_postcode + ", im_auth=" + im_auth + ", im_skill=" + im_skill
+				+ ", s_category=" + s_category + ", s_keyword=" + s_keyword + ", recordCountPerPage="
+				+ recordCountPerPage + ", pageNumber=" + pageNumber + ", start=" + start + ", end=" + end + ", expYear="
+				+ expYear + ", expMonth=" + expMonth + ", outsideperson=" + outsideperson + "]";
 	}
+
 	
 }

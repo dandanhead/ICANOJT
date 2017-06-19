@@ -32,14 +32,17 @@
 				<label>* PW</label>
 				<input type="password" class="form-control" style="width: 40%;" name="im_pw" id="chkpw">
 			</div>
+			<br>
 			<div>
 				<label>* PW(Confirm)</label>
 				<input type="password" class="form-control" style="width: 40%;" id="confirmpw">
 			</div>
+			<br>
 			<div>
 				<label>* Name</label>
 				<input type="text" class="form-control" style="width: 40%;" name="im_name" id="chkname">
 			</div>
+			<br>
 			<div>
 				<label>* Social Num</label>
 				<div class="row">
@@ -52,6 +55,7 @@
 				  <input type="hidden" value="" name="im_scnum" id="chkscnum">
 				</div>
 			</div>
+			<br>
 			<div>
 				<label>* Phone</label>
 				<div class="row">
@@ -67,10 +71,12 @@
 				  <input type="hidden" value="" name="im_phone" id="chkphone">
 				</div>
 			</div>
+			<br>
 			<div>
 				<label>* E-mail</label>
 				<input type="email" class="form-control" name="im_email" id="chkemail" style="width: 50%">
 			</div>
+			<br>
 			<div>
 				<label>* Address</label>
 				<br>
@@ -80,29 +86,13 @@
 				<input type="text"  class="form-control" id="tempaddress" style="width: 50%" placeholder="도로명 또는 지번 주소" readonly="readonly" name="im_address">
 				<input type="text"  class="form-control" id="detailaddress" style="width: 50%" placeholder="상세 주소" name="im_detailaddr">
 			</div>
+			<br>
 			<div class="chkbox">
-				<label>* Language</label>
+				<label>* Language and Skill</label>
 				<br>
-				<input type="checkbox" value="Java" name="chklang" class="chklang">&nbsp;Java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="jQuery" name="chklang" class="chklang">&nbsp;jQuery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="JSP" name="chklang" class="chklang">&nbsp;JSP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Ajax" name="chklang" class="chklang">&nbsp;Ajax&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="PHP" name="chklang" class="chklang">&nbsp;PHP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="CSS" name="chklang" class="chklang">&nbsp;CSS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="HTML" name="chklang" class="chklang">&nbsp;HTML&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="C" name="chklang" class="chklang">&nbsp;C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="C++" name="chklang" class="chklang">&nbsp;C++&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="C#" name="chklang" class="chklang">&nbsp;C#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Ruby" name="chklang" class="chklang">&nbsp;Ruby&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Object C" name="chklang" class="chklang">&nbsp;Object C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<br>
-				<input type="checkbox" value="Swift" name="chklang" class="chklang">&nbsp;Swift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Spring" name="chklang" class="chklang">&nbsp;Spring&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Oracle" name="chklang" class="chklang">&nbsp;Oracle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="MsSql" name="chklang" class="chklang">&nbsp;MsSql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="MySql" name="chklang" class="chklang">&nbsp;MySql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				
+				<input type="text" name="im_skill" class="form-control" style="width: 50%; text-transform: uppercase; ime-mode: disabled;" id="skillinput" >
 			</div>
+			<br>
 			<div class="licensechkbox">
 				<label>License</label>
 				<br>
@@ -115,6 +105,7 @@
 				<input type="checkbox" value="SQLd" name="chklicense" class="chklicense">&nbsp;SQLd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="checkbox" value="SQLp" name="chklicense" class="chklicense">&nbsp;SQLp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			</div>
+			<br>
 			<div id="selectDep">
 				<label>* Department</label>
 				<select class="form-control" style="width: 30%;" name="im_dname">
@@ -131,6 +122,7 @@
 				<input type="text" class="form-control" style="width: 30%" name="outsideperson" id="coname">
 				
 			</div>
+			<br>
 			<div>
 				<label>* Authority</label>
 				<select class="form-control" style="width: 30%;" name="im_auth">
@@ -212,6 +204,13 @@ $("#findaddr").click(function() {
         }
     }).open();
 });
+
+//스킬 입력시 영어 대문자만 허용,콤마로 구분 , skillinput
+$("#skillinput").keyup(function() {
+	
+	$(this).val($(this).val().replace(/[0-9]|[^\!-z]/gi,""));
+});
+
 </script>
 <script type="text/javascript" src="js/addworkerjQuery.js?version=201706151"></script>
 </html>

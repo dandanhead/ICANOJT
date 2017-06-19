@@ -15,6 +15,7 @@ public class ProjectVO {
 	private String ipl_detailaddr; //상세주소
 	private String ipl_postcode; // 우편번호
 	private int ipl_req_num; //프로젝트 참여 인원수, 필요 인원수
+	private String ipl_skill; //프로젝트 스킬
 	
 	// 페이징
 	private int recordCountPerPage = 10;
@@ -24,11 +25,11 @@ public class ProjectVO {
 	
 	public ProjectVO() {
 	}
-
+	
 	public ProjectVO(int ipl_idx, String ipl_pname, String ipl_sdate, String ipl_eptdate, String ipl_edate,
 			String ipl_content, String ipl_doc, String ipl_charge, String ipl_client, String ipl_address,
-			String ipl_detailaddr, String ipl_postcode, int ipl_req_num, int recordCountPerPage, int pageNumber,
-			int start, int end) {
+			String ipl_detailaddr, String ipl_postcode, int ipl_req_num, String ipl_skill, int recordCountPerPage,
+			int pageNumber, int start, int end) {
 		this.ipl_idx = ipl_idx;
 		this.ipl_pname = ipl_pname;
 		this.ipl_sdate = ipl_sdate;
@@ -42,10 +43,19 @@ public class ProjectVO {
 		this.ipl_detailaddr = ipl_detailaddr;
 		this.ipl_postcode = ipl_postcode;
 		this.ipl_req_num = ipl_req_num;
+		this.ipl_skill = ipl_skill;
 		this.recordCountPerPage = recordCountPerPage;
 		this.pageNumber = pageNumber;
 		this.start = start;
 		this.end = end;
+	}
+	
+	public String getIpl_skill() {
+		return ipl_skill;
+	}
+
+	public void setIpl_skill(String ipl_skill) {
+		this.ipl_skill = ipl_skill;
 	}
 
 	public int getIpl_idx() {
@@ -190,8 +200,8 @@ public class ProjectVO {
 				+ ", ipl_eptdate=" + ipl_eptdate + ", ipl_edate=" + ipl_edate + ", ipl_content=" + ipl_content
 				+ ", ipl_doc=" + ipl_doc + ", ipl_charge=" + ipl_charge + ", ipl_client=" + ipl_client
 				+ ", ipl_address=" + ipl_address + ", ipl_detailaddr=" + ipl_detailaddr + ", ipl_postcode="
-				+ ipl_postcode + ", ipl_req_num=" + ipl_req_num + ", recordCountPerPage=" + recordCountPerPage
-				+ ", pageNumber=" + pageNumber + ", start=" + start + ", end=" + end + "]";
+				+ ipl_postcode + ", ipl_req_num=" + ipl_req_num + ", ipl_skill=" + ipl_skill + ", recordCountPerPage="
+				+ recordCountPerPage + ", pageNumber=" + pageNumber + ", start=" + start + ", end=" + end + "]";
 	}
 
 }

@@ -247,6 +247,8 @@ $("#addbtn").click(function() {
         }                       
     }
 	
+	
+
 	if( chkpw == null || chkpw == ""){
 		alert("PassWord를 입력해 주세요");
 	}else if(chkpw != chkcpw){

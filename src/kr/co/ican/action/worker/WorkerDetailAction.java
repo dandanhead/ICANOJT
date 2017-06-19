@@ -3,19 +3,18 @@ package kr.co.ican.action.worker;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import kr.co.ican.controller.CommandAction;
-import kr.co.ican.dao.WorkerDAO;
+import kr.co.ican.services.WorkerServiceImpl;
 import kr.co.ican.vo.ExperienceVO;
 import kr.co.ican.vo.MemLicenseVO;
-import kr.co.ican.vo.MemSkillVO;
 import kr.co.ican.vo.MemberVO;
 
 public class WorkerDetailAction implements CommandAction {
 
+	private WorkerServiceImpl workerservice = WorkerServiceImpl.getInstance();
+	
 	@Override
 	public String requestPro(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 		String ns = kr.co.ican.help.Helps.NS; //Name Space
@@ -24,11 +23,9 @@ public class WorkerDetailAction implements CommandAction {
 		String expy = request.getParameter("expy");
 		String expm = request.getParameter("expm");
 		
-		WorkerDAO wdao = WorkerDAO.getInstance();
 		ExperienceVO evo = new ExperienceVO();
 		MemberVO mvo = new MemberVO();
 		MemLicenseVO licvo = new MemLicenseVO();
-		MemSkillVO svo = new MemSkillVO();
 		//페이징 처리
 		String pgn = request.getParameter("pageNumber"); // 현재 페이지 받아오기 , null 일경우 0
 		int pageNumber = castChange(pgn); // 현제 페이지 번호, null 일경우 0
@@ -46,22 +43,22 @@ public class WorkerDetailAction implements CommandAction {
 		mvo.setIm_idx(im_idx); 
 		evo.setIme_im_idx(im_idx);
 		licvo.setIml_im_idx(im_idx);
-		svo.setIms_im_idx(im_idx);
+//		svo.setIms_im_idx(im_idx);
 		
 		//1. 기본 정보 가져오기
-		mvo = wdao.getMemberDetail(mvo); 
+		mvo = workerservice.getMemberDetail(mvo); 
 		//2. 스킬 리스트 가져오기
-		List<MemSkillVO> slist = new ArrayList<MemSkillVO>();
-		slist = wdao.getMemberSkills(svo);
+//		List<MemSkillVO> slist = new ArrayList<MemSkillVO>();
+//		slist = workerservice.getMemberSkills(svo);
 		//3, 경력 가져오기
 		List<ExperienceVO> elist = new ArrayList<ExperienceVO>();
-		elist = wdao.getMemberExperiences(evo);
-		int totalRecordCount = wdao.getTotalHistory(evo);
+		elist = workerservice.getMemberExperiences(evo);
+		int totalRecordCount = workerservice.getTotalHistory(evo);
 		//4. 라이센스 가져오기
 		List<MemLicenseVO> liclist = new ArrayList<MemLicenseVO>();
-		liclist = wdao.getMemberLicenses(licvo);
+		liclist = workerservice.getMemberLicenses(licvo);
 		//5. 입사일 가져오기
-		String regidate = wdao.getRegiDate(mvo);
+		String regidate = workerservice.getRegiDate(mvo);
 		//6. 생년월일 , 나이 , 성별  계산
 		String stnum = mvo.getIm_scnum().substring(0 , 6); // 850910
 		String agenum = stnum.substring(0, 2);
@@ -108,7 +105,7 @@ public class WorkerDetailAction implements CommandAction {
 		request.setAttribute("expm", expm);
 		request.setAttribute("regiDate", regidate);
 		request.setAttribute("mvo", mvo);
-		request.setAttribute("slist", slist);
+//		request.setAttribute("slist", slist);
 		request.setAttribute("elist", elist);
 		request.setAttribute("liclist", liclist);
 		

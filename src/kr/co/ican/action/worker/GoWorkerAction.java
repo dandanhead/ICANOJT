@@ -4,17 +4,18 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import kr.co.ican.controller.CommandAction;
-import kr.co.ican.dao.WorkerDAO;
+import kr.co.ican.services.WorkerServiceImpl;
 import kr.co.ican.vo.MemberVO;
 
 public class GoWorkerAction implements CommandAction{
 
+	private WorkerServiceImpl workerservice = WorkerServiceImpl.getInstance();
+	
 	@Override
 	public String requestPro(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 		
 		String ns = kr.co.ican.help.Helps.NS; //Name Space
 		request.setCharacterEncoding("UTF-8"); // utf-8 charset
-		WorkerDAO wdao = WorkerDAO.getInstance(); // 생성
 		MemberVO mvo = new MemberVO();
 		
 		// search
@@ -39,8 +40,8 @@ public class GoWorkerAction implements CommandAction{
 		mvo.setRecordCountPerPage(recordCountperPage);
 		
 		//DAO
-		int totalRecordCount=wdao.getWorkerCount(mvo); //총 게시글 수
-		List<MemberVO> memlist = wdao.getWorkerList(mvo); // 글목록 카운트 쿼리는 성공했으니 리스트 가져오면 끝~~
+		int totalRecordCount=workerservice.getWorkerCount(mvo); //총 게시글 수
+		List<MemberVO> memlist = workerservice.getWorkerList(mvo); // 글목록 카운트 쿼리는 성공했으니 리스트 가져오면 끝~~
 
 		// 가져온 리스트를 화면으로 가져가기
 		request.setAttribute("wsearch", wsearch);// 어떤 검색인지 판단하기

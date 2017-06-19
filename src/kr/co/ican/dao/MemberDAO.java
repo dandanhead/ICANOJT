@@ -4,13 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import kr.co.ican.dbconn.GetDBConn;
-import kr.co.ican.interfaces.MemberInterface;
 import kr.co.ican.vo.ExperienceVO;
 import kr.co.ican.vo.MemberVO;
 
-public class MemberDAO implements MemberInterface{
+public class MemberDAO {
 	
 	private static MemberDAO memdao;
 
@@ -23,7 +21,6 @@ public class MemberDAO implements MemberInterface{
 		return memdao;
 	}
 
-	@Override
 	public MemberVO logininfo(MemberVO lvo) {
 		
 		Connection conn = null;
@@ -90,7 +87,6 @@ public class MemberDAO implements MemberInterface{
        }
 	}
 
-	@Override
 	public MemberVO findID(MemberVO lvo) {
 		
 		Connection conn = null;
@@ -138,7 +134,6 @@ public class MemberDAO implements MemberInterface{
         
 	}
 
-	@Override
 	public MemberVO findPW(MemberVO lvo) {
 		
 		Connection conn = null;
@@ -185,7 +180,6 @@ public class MemberDAO implements MemberInterface{
         }
 	}
 
-	@Override
 	public ExperienceVO getExperience(MemberVO lvo) {
 		
 		Connection conn = null;
