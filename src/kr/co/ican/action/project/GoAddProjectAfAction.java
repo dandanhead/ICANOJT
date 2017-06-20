@@ -2,20 +2,11 @@ package kr.co.ican.action.project;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
-import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -36,10 +27,15 @@ public class GoAddProjectAfAction extends HttpServlet{
 	
 	private void addProjectAf(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		
-		String saveDir = request.getServletContext().getRealPath("uploadfile");
+		String saveDir = request.getServletContext().getRealPath("/uploadfile");
+		
+		//폴더 체크 후 폴더 생성
+		File mkdir = new File(saveDir);
+		if(!mkdir.exists()){
+			mkdir.mkdirs();
+		}
 		int maxSize = 1024*1024*100; 
 		String encType = "UTF-8";
-		
 		MultipartRequest multipartRequest = new MultipartRequest(request, saveDir, maxSize, encType, new DefaultFileRenamePolicy()); //upload 시점
 		
 		String ipl_pname = multipartRequest.getParameter("ipl_pname"); //프로젝트명

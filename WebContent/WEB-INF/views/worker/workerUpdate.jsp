@@ -254,7 +254,7 @@ $("#findaddr").click(function() {
 //대문자 영어 대문자
 $("#skillinput").keyup(function() {
 	$(this).val($(this).val().toUpperCase());
-	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
+	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_<>@\$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
 });
 </script>
 <script type="text/javascript" src="js/updateworkerjQuery.js?version=20170611232354341"></script>

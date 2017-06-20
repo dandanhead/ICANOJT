@@ -218,7 +218,7 @@ $("#findaddr").click(function() {
 //스킬 입력시 영어 대문자만 허용,콤마로 구분 , skillinput
 $("#skillinput").keyup(function() {
 	$(this).val($(this).val().toUpperCase());
-	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
+	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_<>@\$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
 });
 
 </script>
