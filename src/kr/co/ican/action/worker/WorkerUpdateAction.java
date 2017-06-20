@@ -29,24 +29,19 @@ public class WorkerUpdateAction implements CommandAction {
 		MemLicenseVO licvo = new MemLicenseVO();
 		
 		mvo.setIm_idx(im_idx);
-//		svo.setIms_im_idx(mvo.getIm_idx());
 		evo.setIme_im_idx(mvo.getIm_idx());
 		licvo.setIml_im_idx(mvo.getIm_idx());
 		
 		//1. 기본 정보 가져오기
 		mvo = workerservice.getMemberDetail(mvo); 
-//		//2. 스킬 리스트 가져오기
-//		List<MemSkillVO> slist = new ArrayList<MemSkillVO>();
-//		slist = workerservice.getMemberSkills(svo);
-		//3, 경력 가져오기
+		//2, 경력 가져오기
 		List<ExperienceVO> elist = new ArrayList<ExperienceVO>();
 		elist = workerservice.getMemberExperiences(evo);
-		//4. 라이센스 가져오기
+		//3. 라이센스 가져오기
 		List<MemLicenseVO> liclist = new ArrayList<MemLicenseVO>();
 		liclist = workerservice.getMemberLicenses(licvo);
 		
 		request.setAttribute("mvo", mvo);
-//		request.setAttribute("slist", slist);
 		request.setAttribute("elist", elist);
 		request.setAttribute("liclist", liclist);
 		

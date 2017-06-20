@@ -4,25 +4,25 @@ public class MemLicenseVO {
 
     private int iml_im_idx;
 	private String iml_lname;
-	private String iml_acudate;
+	private String iml_acqdate;
 	private String iml_organization;
 	
 	public MemLicenseVO() {
 	}
 	
-	public MemLicenseVO(int iml_im_idx, String iml_lname, String iml_acudate, String iml_organization) {
+	public MemLicenseVO(int iml_im_idx, String iml_lname, String iml_acqdate, String iml_organization) {
 		this.iml_im_idx = iml_im_idx;
 		this.iml_lname = iml_lname;
-		this.iml_acudate = iml_acudate;
+		this.iml_acqdate = iml_acqdate;
 		this.iml_organization = iml_organization;
 	}
 	
-	public String getIml_acudate() {
-		return iml_acudate;
+	public String getIml_acqdate() {
+		return iml_acqdate;
 	}
 
-	public void setIml_acudate(String iml_acudate) {
-		this.iml_acudate = iml_acudate;
+	public void setIml_acqdate(String iml_acqdate) {
+		this.iml_acqdate = iml_acqdate;
 	}
 
 	public String getIml_organization() {
@@ -48,7 +48,7 @@ public class MemLicenseVO {
 
 	@Override
 	public String toString() {
-		return "MemLicenseVO [iml_im_idx=" + iml_im_idx + ", iml_lname=" + iml_lname + ", iml_acudate=" + iml_acudate
+		return "MemLicenseVO [iml_im_idx=" + iml_im_idx + ", iml_lname=" + iml_lname + ", iml_acqdate=" + iml_acqdate
 				+ ", iml_organization=" + iml_organization + "]";
 	}
 }

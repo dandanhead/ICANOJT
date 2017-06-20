@@ -47,24 +47,21 @@ public class WorkerDetailAction implements CommandAction {
 		
 		//1. 기본 정보 가져오기
 		mvo = workerservice.getMemberDetail(mvo); 
-		//2. 스킬 리스트 가져오기
-//		List<MemSkillVO> slist = new ArrayList<MemSkillVO>();
-//		slist = workerservice.getMemberSkills(svo);
-		//3, 경력 가져오기
+		//2, 경력 가져오기
 		List<ExperienceVO> elist = new ArrayList<ExperienceVO>();
 		elist = workerservice.getMemberExperiences(evo);
 		int totalRecordCount = workerservice.getTotalHistory(evo);
-		//4. 라이센스 가져오기
+		//3. 라이센스 가져오기
 		List<MemLicenseVO> liclist = new ArrayList<MemLicenseVO>();
 		liclist = workerservice.getMemberLicenses(licvo);
-		//5. 입사일 가져오기
+		//4. 입사일 가져오기
 		String regidate = workerservice.getRegiDate(mvo);
-		//6. 생년월일 , 나이 , 성별  계산
+		//5. 생년월일 , 나이 , 성별  계산
 		String stnum = mvo.getIm_scnum().substring(0 , 6); // 850910
 		String agenum = stnum.substring(0, 2);
 		String ednum = mvo.getIm_scnum().substring(7, 14); // 1691817
 		String gennum = ednum.substring(0, 1);
-		//7. 경력
+		//6. 경력
 		String experience = "";
 		
 		if("0".equals(expy) && "0".equals(expm)){
@@ -101,11 +98,8 @@ public class WorkerDetailAction implements CommandAction {
 		request.setAttribute("expm", expm);
 		request.setAttribute("idx", im_idx);
 		request.setAttribute("experience", experience);
-		request.setAttribute("expy", expy);
-		request.setAttribute("expm", expm);
 		request.setAttribute("regiDate", regidate);
 		request.setAttribute("mvo", mvo);
-//		request.setAttribute("slist", slist);
 		request.setAttribute("elist", elist);
 		request.setAttribute("liclist", liclist);
 		

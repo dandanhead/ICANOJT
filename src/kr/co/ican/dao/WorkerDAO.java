@@ -26,7 +26,6 @@ public class WorkerDAO {
 		return wdao;
 	}
 
-
 	public boolean addWorkerExp(ExperienceVO evo, Connection conn, PreparedStatement psmt, ResultSet rs) {
 			String sql = "";
 	        int cnt = 1;
@@ -87,13 +86,13 @@ public class WorkerDAO {
 	        int cnt = 1;
 	        int result = 0;
 	        try {
-				sql = " INSERT INTO ICAN_MEM_LICENSE ( IML_IM_IDX, IML_LNAME , IML_ACUDATE, IML_ORGANIZATION ) "
+				sql = " INSERT INTO ICAN_MEM_LICENSE ( IML_IM_IDX, IML_LNAME , IML_ACQDATE, IML_ORGANIZATION ) "
 					+ " VALUES( MEMBER_SEQ.CURRVAL , ? , ? , ?) ";
 				
 				
 				psmt = conn.prepareStatement(sql);
 				psmt.setString(cnt++, mlvo.getIml_lname());
-				psmt.setString(cnt++, mlvo.getIml_acudate());
+				psmt.setString(cnt++, mlvo.getIml_acqdate());
 				psmt.setString(cnt++, mlvo.getIml_organization());
 				
 				result = psmt.executeUpdate();
@@ -267,7 +266,7 @@ public class WorkerDAO {
         
         try {
 			conn = GetDBConn.getConnection();
-			sql = " SELECT IM_IDX, IM_PW, IM_DNAME, IM_NAME, IM_PHONE, IM_EMAIL, IM_STATUS, IM_SCNUM, IM_ADDRESS,IM_DETAILADDR,IM_POSTCODE, IM_AUTH FROM ICAN_MEMBER WHERE IM_IDX = ? ";
+			sql = " SELECT IM_IDX, IM_PW, IM_DNAME, IM_NAME, IM_PHONE, IM_EMAIL, IM_STATUS, IM_SCNUM, IM_ADDRESS,IM_DETAILADDR,IM_POSTCODE, IM_AUTH, IM_SKILL FROM ICAN_MEMBER WHERE IM_IDX = ? ";
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, mvo.getIm_idx());
 			
@@ -287,6 +286,7 @@ public class WorkerDAO {
 				mvo.setIm_detailaddr(rs.getString(cnt++));
 				mvo.setIm_postcode(rs.getString(cnt++));
 				mvo.setIm_auth(rs.getInt(cnt++));
+				mvo.setIm_skill(rs.getString(cnt++));
 				
 			}
 			
@@ -301,35 +301,37 @@ public class WorkerDAO {
 		return mvo;
 	}
 
-	public List<MemLicenseVO> getMemberLicenses(MemLicenseVO licvo) {
+	public List<MemLicenseVO> getMemberLicenses(MemLicenseVO lvo) {
 		Connection conn = null;
 		PreparedStatement psmt = null;
         ResultSet rs = null;
-        String sql = "";
+        
         int cnt = 1;
+        String sql = "";
+        
         List<MemLicenseVO> liclist = new ArrayList<MemLicenseVO>();
         
         try {
-			conn = GetDBConn.getConnection();
-			sql = " SELECT * FROM ICAN_MEM_LICENSE WHERE IML_IM_IDX = ? ";
-			psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, licvo.getIml_im_idx());
-			
-			rs = psmt.executeQuery();
-			
-			while (rs.next()) {
-				cnt = 1;
-				MemLicenseVO lvo = new MemLicenseVO();
-				lvo.setIml_im_idx(rs.getInt(cnt++));
-				lvo.setIml_lname(rs.getString(cnt++));
+        	conn = GetDBConn.getConnection();
+        	sql = "  SELECT * FROM ICAN_MEM_LICENSE WHERE IML_IM_IDX = ? ";
+        	psmt = conn.prepareStatement(sql);
+        	psmt.setInt(cnt++, lvo.getIml_im_idx());
+        	
+        	rs =psmt.executeQuery();
+        	
+        	while (rs.next()) {
+        		cnt = 1;
+				MemLicenseVO mlvo = new MemLicenseVO();
+				mlvo.setIml_im_idx(rs.getInt(cnt++));
+				mlvo.setIml_lname(rs.getString(cnt++));
+				mlvo.setIml_acqdate(rs.getString(cnt++));
+				mlvo.setIml_organization(rs.getString(cnt++));
 				
-				liclist.add(lvo);
+				liclist.add(mlvo);
 			}
-			
-		} catch (SQLException e) {
-			
+		} catch (Exception e) {
 			e.printStackTrace();
-			
+			return null;
 		}finally {
 			GetDBConn.close(conn, psmt, rs);
 		}
@@ -509,7 +511,7 @@ public class WorkerDAO {
         int result = 0;
         try {
 			sql = " UPDATE ICAN_MEMBER SET IM_PW = ? , IM_DNAME = ? , IM_PHONE = ?, IM_EMAIL = ? ,IM_ADDRESS = ?, IM_DETAILADDR = ? ,"
-				+ " IM_POSTCODE = ? , IM_AUTH = ?   WHERE IM_IDX = ? ";
+				+ " IM_POSTCODE = ? , IM_AUTH = ? , IM_SKILL = ?  WHERE IM_IDX = ? ";
 			
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(cnt++, mvo.getIm_pw());
@@ -520,6 +522,7 @@ public class WorkerDAO {
 			psmt.setString(cnt++, mvo.getIm_detailaddr());
 			psmt.setString(cnt++, mvo.getIm_postcode());
 			psmt.setInt(cnt++, mvo.getIm_auth());
+			psmt.setString(cnt++, mvo.getIm_skill());
 			psmt.setInt(cnt++, mvo.getIm_idx());
 			
 			result = psmt.executeUpdate();
@@ -536,9 +539,10 @@ public class WorkerDAO {
         int cnt = 1;
         int result = 0;
         try {
+        	
 			sql = " INSERT INTO ICAN_MEM_EXP(IME_IM_IDX, IME_REGI_DATE, IME_EXIT_DATE, IME_CONAME, IME_AUTH, IME_ROLL) "
-				+ " VALUES(? , ? , ? , ?, ? , ?) ";
-
+				+ " VALUES(? , ? , ? , ?, ? , ? ) ";
+			
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(cnt++, evo.getIme_im_idx());
 			psmt.setString(cnt++, evo.getIme_regi_date());
@@ -562,13 +566,15 @@ public class WorkerDAO {
 	        int cnt = 1;
 	        int result = 0;
 	        try {
-				sql = " INSERT INTO ICAN_MEM_LICENSE(IML_IM_IDX, IML_LNAME) "
-					+ " VALUES( ? , ? ) ";
-				
-				
+	        	sql = " INSERT INTO ICAN_MEM_LICENSE ( IML_IM_IDX, IML_LNAME , IML_ACQDATE, IML_ORGANIZATION ) "
+					+ " VALUES( ? , ? , ? , ?) ";
+					
+					
 				psmt = conn.prepareStatement(sql);
 				psmt.setInt(cnt++, mlvo.getIml_im_idx());
 				psmt.setString(cnt++, mlvo.getIml_lname());
+				psmt.setString(cnt++, mlvo.getIml_acqdate());
+				psmt.setString(cnt++, mlvo.getIml_organization());
 				
 				result = psmt.executeUpdate();
 				

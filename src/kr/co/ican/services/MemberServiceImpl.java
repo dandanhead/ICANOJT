@@ -38,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
 	@Override
 	public ExperienceVO getExperience(MemberVO lvo) {
 		// TODO Auto-generated method stub
-		return null;
+		return memdao.getExperience(lvo);
 	}
 
 }

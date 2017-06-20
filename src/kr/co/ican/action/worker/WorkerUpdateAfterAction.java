@@ -53,9 +53,8 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 		String im_email = request.getParameter("im_email"); // 이메일
 		String im_postcode = request.getParameter("im_postcode");
 		String im_address = request.getParameter("im_address"); // 집주소
+		String im_skill = request.getParameter("im_skill"); //스킬
 		String im_detailaddr = request.getParameter("im_detailaddr");
-		String chklang[] = request.getParameterValues("chklang"); // 사용가능한 스킬 체크박스 배열 받기
-		String chklicense[] = request.getParameterValues("chklicense");
 		String im_dname = request.getParameter("im_dname"); //부서 코드 
 		String im_auth = request.getParameter("im_auth"); // 직급 //int 변환
 		String outsideperson = request.getParameter("outsideperson");
@@ -65,10 +64,10 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 		String arrconame[] = request.getParameterValues("ime_coname");
 		String arrauth[] = request.getParameterValues("ime_auth");
 		String arrroll[] = request.getParameterValues("ime_roll");
-		// chekcer
-		String changlic = request.getParameter("licflag");
-		String changeskill = request.getParameter("skillflag");
-		String changexp = request.getParameter("expflag");
+		// 자격증
+		String arrlicname[] = request.getParameterValues("iml_lname");
+		String arracqdate[] = request.getParameterValues("iml_acudate");
+		String arrorg[] = request.getParameterValues("iml_organization");
 		
 		//vo setting
 		mvo.setIm_idx(memidx);
@@ -83,8 +82,8 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 		mvo.setIm_postcode(im_postcode);
 		mvo.setIm_dname(im_dname);
 		mvo.setIm_auth(Integer.parseInt(im_auth));
+		mvo.setIm_skill(im_skill);
 		
-//		msvo.setIms_im_idx(memidx);
 		mlvo.setIml_im_idx(memidx);
 		evo.setIme_im_idx(memidx);
 		
@@ -99,109 +98,82 @@ public class WorkerUpdateAfterAction extends HttpServlet{
         boolean expFlag = false;
         boolean expdel = false; 
         boolean licdel = false; 
-        boolean skilldel =false; 
-        boolean updskill = false; 
-        boolean updlic = false;
+        boolean licFlag = false;
         
         //url
 		String url = "";
         
         try {
-        	
 			conn = GetDBConn.getConnection();
 			// transaction start
 			conn.setAutoCommit(false);
 			//1 . 기본 정보 추가
 			infoFlag = workerservice.updateWorkerInfo(mvo, conn, psmt, rs);
-			System.out.println("1.기본 정보 추가");
-			//2. 스킬 집어넣기
-			if("1".equals(changeskill)){
-				// 스킬 지우고
-//				skilldel = workerservice.preupdateWorkerSkill(msvo, conn, psmt, rs); ////////////// 쿼리 
-				System.out.println("스킬이 바뀌었으니 스킬을 지우고");
-				for (int idx = 0; idx < chklang.length; idx++) {
-					// 스킬 체크 만큼 insert
-					String ims_is_sname = chklang[idx].trim();
-//					msvo.setIms_is_sname(ims_is_sname);
-//					updskill = workerservice.updateWorkerSkill(msvo, conn, psmt, rs); ////////////////// 쿼리 
-					System.out.println("새로운 스킬을 insert 반복!");
-					if(!updskill || !skilldel){
+			//2. 자격증 집어넣기
+			//2-1 자격증 다 지우기
+			boolean exsitLicense = workerservice.chkExistLicence(mlvo);
+			if(exsitLicense){
+				licdel = workerservice.preupdateWorkerLicense(mlvo, conn, psmt, rs);
+			}else{
+				licdel = true;
+			}
+			//2-2 자격증 인서트 하기
+			if(arrlicname != null && arracqdate != null && arrorg != null){
+				for (int idx = 0; idx < arrlicname.length; idx++) {
+					
+					String iml_lname = arrlicname[idx].trim();
+					String iml_acqdate = arracqdate[idx].trim();
+					String iml_organization = arrorg[idx].trim();
+					
+					String acqdate = iml_acqdate.substring(0, 10);
+					
+					mlvo.setIml_lname(iml_lname);
+					mlvo.setIml_acqdate(acqdate);
+					mlvo.setIml_organization(iml_organization);
+					
+					licFlag = workerservice.updateWorkerLicense(mlvo , conn, psmt, rs);
+					if(!licFlag){
 						break;
 					}
 				}
 			}else{
-				skilldel = true;
-				updskill = true;
+				licFlag = true;
 			}
-			//3. 자격증 집어넣기
-			if("1".equals(changlic)){
-				//자격증 있는지 체크
-				boolean exsitLicense = workerservice.chkExistLicence(mlvo);
-				
-				if(exsitLicense){
-					licdel = workerservice.preupdateWorkerLicense(mlvo, conn, psmt, rs); //// 자격증 지우기 쿼리 //////////////////////////
-				}else{
-					licdel = true;
-				}
-				if(chklicense != null && chklicense.length > 0 ){
-					
-					for (int idx = 0; idx < chklicense.length; idx++) {
-						
-						String iml_lname = chklicense[idx].trim();
-						
-						mlvo.setIml_lname(iml_lname);
-						
-						updlic = workerservice.updateWorkerLicense(mlvo, conn, psmt, rs); /////////////// 쿼리 
-						System.out.println("새로운 자격증을 insert 반복!");
-						if(!updlic || !licdel){
-							break;
-						}
-					}
-				}else{
-					updlic = true;
-				}
+			// 3. 현재 회사 경력 추가 하기
+			// 3-1. 경력 다 지우기
+			boolean chkExp = workerservice.chkExistExp(evo);
+			// 3-2. 경력 insert
+			if(chkExp){
+				expdel = workerservice.preupdateWorkerExp(evo, conn, psmt, rs); 
 			}else{
-				licdel = true;
-				updlic = true;
-			}
-			
-			// 4. 현재 회사 경력 추가 하기 
-			// 경력 다 삭제 (현재 회사 빼고)
-			if("1".equals(changexp)){
-				//경력 체크
-				boolean chkExp = workerservice.chkExistExp(evo);
-				if(chkExp){
-					expdel = workerservice.preupdateWorkerExp(evo, conn, psmt, rs); ///////////// 쿼리  delete
-				}else{
-					expdel = true;
-				}
-				
-				if(arrregi != null && arrexit != null && arrconame != null && arrauth != null && arrroll != null){
-					for (int idx = 0; idx < arrregi.length; idx++) {
-						
-						evo.setIme_regi_date(arrregi[idx]);
-						evo.setIme_exit_date(arrexit[idx]);
-						evo.setIme_coname(arrconame[idx]);
-						evo.setIme_auth(Integer.parseInt(arrauth[idx].trim()));
-						evo.setIme_roll(arrroll[idx]);
-						expFlag =workerservice.updateWorkerExp(evo, conn, psmt, rs); ////////////// 쿼리 
-						System.out.println("경력넣은 만큼 insert 반복!");
-						if(!expFlag || !expdel){
-							break;
-						}
-					}
-				}else{
-					expFlag = true;
-				}
-				
-			}else{
-				expFlag = true;
 				expdel = true;
 			}
+			
+			if(arrregi != null && arrexit != null && arrconame != null && arrauth != null && arrroll != null){
+				for (int idx = 0; idx < arrregi.length; idx++) {
+					
+					String subregi = arrregi[idx].substring(0,10);
+					String subexit = arrexit[idx].substring(0, 10);
+					
+					evo.setIme_regi_date(subregi);
+					evo.setIme_exit_date(subexit);
+					evo.setIme_coname(arrconame[idx]);
+					evo.setIme_auth(Integer.parseInt(arrauth[idx].trim()));
+					evo.setIme_roll(arrroll[idx]);
+					
+					expFlag =workerservice.updateWorkerExp(evo, conn, psmt, rs); 
+					if(!expFlag || !expdel){
+						break;
+					}
+				}
+			}else{
+				expFlag = true;
+			}
+			
 			//url
-			System.out.println("infoFlag = " + infoFlag + " , expFlag = " + expFlag + " , expdel = " + expdel + " , licdel = " + licdel + " , skilldel =" + skilldel);
-			System.out.print(" , updskill = " + updskill + " , updlic = " + updlic);
-			if(!infoFlag || !expFlag || !expdel || !licdel || !skilldel || !updskill || !updlic){
+			System.out.println("infoFlag = " + infoFlag + " , expFlag = " + expFlag + " , expdel = " + expdel + " , licdel = " + licdel + " , licFlag = " + licFlag);
+			
+			if(!infoFlag || !expFlag || !expdel || !licdel || !licFlag){
 				url = "goError.do";
 				conn.rollback();
 			}else{

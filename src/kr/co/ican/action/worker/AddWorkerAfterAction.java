@@ -50,18 +50,20 @@ public class AddWorkerAfterAction extends HttpServlet {
 		String im_postcode = request.getParameter("im_postcode");
 		String im_address = request.getParameter("im_address"); // 집주소
 		String im_detailaddr = request.getParameter("im_detailaddr");
-		String chklang[] = request.getParameterValues("chklang"); // 사용가능한 언어 체크박스 배열 받기
-		String chklicense[] = request.getParameterValues("chklicense");
 		String im_dname = request.getParameter("im_dname"); //부서 코드 
 		String im_auth = request.getParameter("im_auth"); // 직급 //int 변환
-		String outsideperson = request.getParameter("outsideperson");
+		String im_skill = request.getParameter("im_skill"); // 스킬
+		String outsideperson = request.getParameter("outsideperson"); //타업체 인력
 		// 경력사항
 		String arrregi[] = request.getParameterValues("ime_regi_date");
 		String arrexit[] = request.getParameterValues("ime_exit_date");
 		String arrconame[] = request.getParameterValues("ime_coname");
 		String arrauth[] = request.getParameterValues("ime_auth");
 		String arrroll[] = request.getParameterValues("ime_roll");
-		
+		// 자격증
+		String arrlicname[] = request.getParameterValues("iml_lname");
+		String arracqdate[] = request.getParameterValues("iml_acudate");
+		String arrorg[] = request.getParameterValues("iml_organization");
 		//vo setting
 		mvo.setOutsideperson(outsideperson);
 		mvo.setIm_pw(im_pw);
@@ -74,15 +76,15 @@ public class AddWorkerAfterAction extends HttpServlet {
 		mvo.setIm_postcode(im_postcode);
 		mvo.setIm_dname(im_dname);
 		mvo.setIm_auth(Integer.parseInt(im_auth));
+		mvo.setIm_skill(im_skill);
 		
 		//workerservice////////////////////////////////////
 		//insert
 		Connection conn = null;
 		PreparedStatement psmt = null;
         ResultSet rs = null;
-        int liccnt = 0, expcnt = 0;
         //checker
-		boolean infoFlag = false, skillFlag = false, licFlag = false, basicFlag = false, expFlag = false; 
+		boolean infoFlag = false, licFlag = false, basicFlag = false, expFlag = false; 
         //url
 		String url = "";
         
@@ -95,38 +97,29 @@ public class AddWorkerAfterAction extends HttpServlet {
 			//1 . 기본 정보 추가
 			infoFlag = workerservice.addWorkerInfo(mvo, conn, psmt, rs);
 			
-//			//2. 스킬 집어넣기
-//			for (int idx = 0; idx < chklang.length; idx++) {
-//				
-//				String ims_is_sname = chklang[idx].trim();
-//				msvo.setIms_is_sname(ims_is_sname);
-//				skillFlag = workerservice.addWorkerSkill(msvo,conn, psmt, rs);
-//				
-//				if(!skillFlag){
-//					break;
-//				}
-//			}
-			//3. 자격증 집어넣기
-			if(chklicense != null && chklicense.length > 0 ){
-				liccnt++;
-				for (int idx = 0; idx < chklicense.length; idx++) {
+			//2.  자격증 집어넣기
+			if(arrlicname != null && arracqdate != null && arrorg != null){
+				for (int idx = 0; idx < arrlicname.length; idx++) {
 					
-					String iml_lname = chklicense[idx].trim();
+					String iml_lname = arrlicname[idx].trim();
+					String iml_acqdate = arracqdate[idx].trim();
+					String iml_organization = arrorg[idx].trim();
 					mlvo.setIml_lname(iml_lname);
+					mlvo.setIml_acqdate(iml_acqdate);
+					mlvo.setIml_organization(iml_organization);
 					
 					licFlag = workerservice.addWorkerLicense(mlvo , conn, psmt, rs);
 					if(!licFlag){
 						break;
 					}
 				}
+			}else{
+				licFlag = true;
 			}
-			// 4. 현재 회사 경력 추가 하기 
-			// 기본 경력 추가
+			//3. 현재 회사 경력 추가 하기 
 			basicFlag = workerservice.basicWorkerExp(mvo, conn, psmt, rs);
-			//4-1 .경력 사항에 따른 처리 (없으면 아이캔 자동생성, 있으면 입력받은거 + 아이캔 자동생성) 
+			//4 .경력 사항에 따른 처리 
 			if(arrregi != null && arrexit != null && arrconame != null && arrauth != null && arrroll != null){
-				
-				expcnt++;
 				
 				for (int idx = 0; idx < arrregi.length; idx++) {
 					
@@ -141,47 +134,19 @@ public class AddWorkerAfterAction extends HttpServlet {
 					if(!expFlag){
 						break;
 					}
-						
 				}
+			}else{
+				
+				expFlag = true;
 			}
 			
 			// url chk
-			if(liccnt != 0 && expcnt != 0){
-				if(infoFlag && skillFlag && licFlag && basicFlag && expFlag){
-					
-					url = "goWorker.do";
-					conn.commit();
-					
-				}else{
-					url = "goError.do";
-					conn.rollback();
-				}
-			}else if(liccnt == 0 && expcnt != 0){
-				if(infoFlag && skillFlag && basicFlag && expFlag){
-					
-					url = "goWorker.do";
-					conn.commit();
-					
-				}else{
-					url = "goError.do";
-					conn.rollback();
-				}
-			}else if(liccnt != 0 && expcnt == 0){
-				if(infoFlag && skillFlag && licFlag && basicFlag){
-					url = "goWorker.do";
-					conn.commit();
-				}else{
-					url = "goError.do";
-					conn.rollback();
-				}
+			if(infoFlag && licFlag &&  basicFlag && expFlag){
+				url = "goWorker.do";
+				conn.commit();
 			}else{
-				if(infoFlag && skillFlag && basicFlag){
-					url = "goWorker.do";
-					conn.commit();
-				}else{
-					url = "goError.do";
-					conn.rollback();
-				}
+				url = "goError.do";
+				conn.rollback();
 			}
 			
 			GetDBConn.close(conn, psmt, rs);

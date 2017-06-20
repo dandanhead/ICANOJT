@@ -110,68 +110,33 @@
 			</div>
 			<div class="chkbox">
 				<label>Language</label>
-				<br>
-				<p><span style="color: red;">사용 가능 언어 :</span> 
-					<c:forEach items="${slist}" var="idx" varStatus="vs"> 
-						${idx.ims_is_sname }
-						<c:if test="${!vs.last}">
-							 &nbsp;/&nbsp;
-						</c:if>
-					</c:forEach>
-				</p>
-				<a class="btn btn-default" id="fixbtn" style="width: 40%">사용기술을 변경하려면 클릭하세요</a>
-				<div id="fixSkill" hidden="true">
-					<b style="color: red;">사용기술을 수정 하실 경우 반드시 한개 이상의 사용기술을 선택 하셔야 합니다.</b>
-					<br>
-					<input type="checkbox" value="Java" name="chklang" class="chklang">&nbsp;Java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="jQuery" name="chklang" class="chklang">&nbsp;jQuery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="JSP" name="chklang" class="chklang">&nbsp;JSP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Ajax" name="chklang" class="chklang">&nbsp;Ajax&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="PHP" name="chklang" class="chklang">&nbsp;PHP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="CSS" name="chklang" class="chklang">&nbsp;CSS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="HTML" name="chklang" class="chklang">&nbsp;HTML&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="C" name="chklang" class="chklang">&nbsp;C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="C++" name="chklang" class="chklang">&nbsp;C++&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="C#" name="chklang" class="chklang">&nbsp;C#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Ruby" name="chklang" class="chklang">&nbsp;Ruby&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Object C" name="chklang" class="chklang">&nbsp;Object C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<br>
-					<input type="checkbox" value="Swift" name="chklang" class="chklang">&nbsp;Swift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Spring" name="chklang" class="chklang">&nbsp;Spring&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Oracle" name="chklang" class="chklang">&nbsp;Oracle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="MsSql" name="chklang" class="chklang">&nbsp;MsSql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="MySql" name="chklang" class="chklang">&nbsp;MySql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				</div>
+				<input type="text" name="im_skill" class="form-control" style="width: 50%; text-transform: uppercase; ime-mode: disabled;" id="skillinput" value="${mvo.im_skill}">
 			</div>
 			<div class="licensechkbox">
 				<label>License</label>
-				<br>
-				<p><span style="color: red;">자격증 :</span>
-					<c:if test="${empty liclist}">
-						자격증이 없습니다.
-					</c:if>
-					<c:if test="${not empty liclist }">
-						<c:forEach items="${liclist}" var="idx" varStatus="vs"> 
-							${idx.iml_lname}
-							<c:if test="${!vs.last}">
-								 &nbsp;/&nbsp;
-							</c:if>
+				<a class="btn btn-default" style="width: 30%; float: right;" id="addLicense">Add License</a>
+				<div>
+					<table class="table table-striped" id="ltb">
+						<colgroup>
+							<col width="30%">
+							<col width="30%">
+							<col width="30%">
+							<col width="10%">
+						</colgroup>
+						<tr>
+							<th>자격증 명</th>
+							<th>취득일</th>
+							<th colspan="2">발급기관</th>
+						</tr>
+						<c:forEach items="${liclist}" var="idx">
+				 		<tr>
+						    <td><input class="form-control" type="text" style="width: 100%;" name="iml_lname" value="${idx.iml_lname}"></td>
+						    <td><input class="form-control" type="text" style="width: 100%;" name="iml_acudate" readonly="readonly" value="${idx.iml_acqdate}"></td>
+						    <td><input class="form-control" type="text" style="width: 100%;" name="iml_organization" value="${idx.iml_organization}"></td>
+						    <td><a class="btn btn-default">cancle</a></td>
+	  					 </tr> 
 						</c:forEach>
-					</c:if>
-				</p>
-				<a class="btn btn-default" id="licfixbtn" style="width: 40%">자격증을 수정하시려면 클릭하세요</a>
-				
-				<div id="fixlic" hidden="true">
-					<b style="color: red;">기존의 자격증 정보는 삭제 됩니다.</b>
-					<br>
-					<input type="checkbox" value="Toeic" name="chklicense" class="chklicense">&nbsp;Toeic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Toefl" name="chklicense" class="chklicense">&nbsp;Toefl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Teps" name="chklicense" class="chklicense">&nbsp;Teps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="정보 처리기사" name="chklicense" class="chklicense">&nbsp;정보 처리기사&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="정보 처리산업기사" name="chklicense" class="chklicense">&nbsp;정보 처리산업기사&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="Word" name="chklicense" class="chklicense">&nbsp;Word&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="SQLd" name="chklicense" class="chklicense">&nbsp;SQLd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="checkbox" value="SQLp" name="chklicense" class="chklicense">&nbsp;SQLp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</table>
 				</div>
 			</div>
 			<div id="selectDep">
@@ -201,9 +166,9 @@
 			<hr>
 			<h2><b>Experience</b></h2>
 			<!-- 경력 보여주기  -->
-			<a class="btn btn-default" id="expfixbtn" style="width: 30%; float: right;">경력사항을 수정하시려면 클릭하세요</a>
-			<c:if test="${fn:length(elist) > 0}">
-				<table class="table table-bordered">
+			<a class="btn btn-default" style="width: 30%; float: right;" id="addCareers">Add Careers</a>
+				<div>
+					<table class="table table-striped" id="ctb">
 						<colgroup>
 							<col width="13%">
 							<col width="13%">
@@ -218,49 +183,23 @@
 							<th>직위</th>
 							<th colspan="2">역할</th>
 						</tr>
-						<c:forEach items="${elist}" var="idx">
-							<tr>
+						<c:forEach items="${elist}" var="iddx">
+							<tr class="trappend">
+								<td><input class="form-control" type="text" style="width: 100%;" name="ime_regi_date" readonly="readonly" value="${iddx.ime_regi_date}"></td>
+								<td><input class="form-control" type="text" style="width: 100%;" name="ime_exit_date" readonly="readonly" value="${iddx.ime_exit_date}"></td>
+								<td><input class="form-control" type="text" style="width: 100%;" name="ime_coname" value="${iddx.ime_coname}"></td>
 								<td>
-									${idx.ime_regi_date}
+									<select class="form-control" style="width: 80%;" name="ime_auth">
+									<option value="0" <c:if test="${iddx.ime_auth eq 0}">selected</c:if>>Developer</option>
+									<option value="1" <c:if test="${iddx.ime_auth eq 1}">selected</c:if>>Manager</option>
+									</select>  
 								</td>
-								<td>
-									${idx.ime_exit_date}
-								</td>
-								<td>
-									${idx.ime_coname}
-								</td>
-								<td>
-									${idx.ime_auth}
-								</td>
-								<td colspan="2">
-									${idx.ime_roll}
-								</td>
+								<td><input class="form-control" type="text" style="width: 100%;" name="ime_roll" value="${iddx.ime_roll }"></td>
+								<td><a class="btn btn-default">cancle</a></td>
 							</tr>
 						</c:forEach>
-				</table>
-			</c:if>
-			<hr>
-			<div id="fixcarreers" hidden="true">
-				<span style="color: red;">※경력사항을 수정 할 경우 기존의 경력사항은 삭제됩니다.</span>
-				<a class="btn btn-default" style="width: 30%; float: right;" id="addCareers">Add Careers</a>
-				<table class="table table-striped" id="ctb">
-					<colgroup>
-						<col width="13%">
-						<col width="13%">
-						<col width="20%">
-						<col width="20%">
-						<col width="24%">
-						<col width="10%">
-					</colgroup>
-					<tr>
-						<th colspan="2">근무기간</th>
-						<th>회사명</th>
-						<th>직위</th>
-						<th colspan="2">역할</th>
-					</tr>
-				</table>
-				<input type="hidden" value="" name="explist" id="getexp">
-			</div>
+					</table>
+				</div>
 			<div >
 				<a class="btn btn-default" href="#none" style="width: 40%;" id="addbtn">Submit</a>
 				<a class="btn btn-default" href="goWorker.do" style="width: 40%;" id="chkchk">Return</a>
@@ -311,6 +250,11 @@ $("#findaddr").click(function() {
         }
     }).open();
 });
+//대문자 영어 대문자
+$("#skillinput").keyup(function() {
+	$(this).val($(this).val().toUpperCase());
+	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
+});
 </script>
-<script type="text/javascript" src="js/updateworkerjQuery.js?version=201706154341"></script>
+<script type="text/javascript" src="js/updateworkerjQuery.js?version=20170611232354341"></script>
 </html>

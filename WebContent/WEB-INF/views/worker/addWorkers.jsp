@@ -89,21 +89,32 @@
 			<br>
 			<div class="chkbox">
 				<label>* Language and Skill</label>
+				<div style="color: red;">사용가능 언어 및 환경은 영어로만 입력 하실 수 있으며 comma(,) 로 구분합니다.</div>
 				<br>
 				<input type="text" name="im_skill" class="form-control" style="width: 50%; text-transform: uppercase; ime-mode: disabled;" id="skillinput" >
 			</div>
 			<br>
 			<div class="licensechkbox">
 				<label>License</label>
+				<a class="btn btn-default" style="width: 30%; float: right;" id="addLicense">Add License</a>
+				<div>
+					<table class="table table-striped" id="ltb">
+						<colgroup>
+							<col width="30%">
+							<col width="30%">
+							<col width="30%">
+							<col width="10%">
+						</colgroup>
+						<tr>
+							<th>자격증 명</th>
+							<th>취득일</th>
+							<th colspan="2">발급기관</th>
+						</tr>
+					</table>
+				<input type="hidden" value="" name="explist" id="getexp">
+				</div>
 				<br>
-				<input type="checkbox" value="Toeic" name="chklicense" class="chklicense">&nbsp;Toeic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Toefl" name="chklicense" class="chklicense">&nbsp;Toefl&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Teps" name="chklicense" class="chklicense">&nbsp;Teps&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="정보 처리기사" name="chklicense" class="chklicense">&nbsp;정보 처리기사&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="정보 처리산업기사" name="chklicense" class="chklicense">&nbsp;정보 처리산업기사&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="Word" name="chklicense" class="chklicense">&nbsp;Word&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="SQLd" name="chklicense" class="chklicense">&nbsp;SQLd&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="checkbox" value="SQLp" name="chklicense" class="chklicense">&nbsp;SQLp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
 			</div>
 			<br>
 			<div id="selectDep">
@@ -120,7 +131,6 @@
 				</select>
 				<label id="conamelabel">※타업체 인력인 경우 소속 회사를 입력해야 합니다.</label>
 				<input type="text" class="form-control" style="width: 30%" name="outsideperson" id="coname">
-				
 			</div>
 			<br>
 			<div>
@@ -207,10 +217,10 @@ $("#findaddr").click(function() {
 
 //스킬 입력시 영어 대문자만 허용,콤마로 구분 , skillinput
 $("#skillinput").keyup(function() {
-	
-	$(this).val($(this).val().replace(/[0-9]|[^\!-z]/gi,""));
+	$(this).val($(this).val().toUpperCase());
+	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
 });
 
 </script>
-<script type="text/javascript" src="js/addworkerjQuery.js?version=201706151"></script>
+<script type="text/javascript" src="js/addworkerjQuery.js?version=201706201133"></script>
 </html>

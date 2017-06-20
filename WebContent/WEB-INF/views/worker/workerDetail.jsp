@@ -71,31 +71,7 @@
 					</label>
 				</td>
 				<td colspan="2">
-					<c:if test="${empty slist}">
-						사용 가능한 기술이 없습니다.
-					</c:if>
-					<c:if test="${not empty slist }">
-						<c:forEach items="${slist}" var="idx">
-							<input type="checkbox" checked="checked" disabled="disabled">${idx.ims_is_sname}&nbsp;&nbsp;
-						</c:forEach>
-					</c:if>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<label>
-						License
-					</label>
-				</td>
-				<td colspan="2">
-					<c:if test="${empty liclist }">
-						자격증이 없습니다.
-					</c:if>
-					<c:if test="${not empty liclist }">
-						<c:forEach items="${liclist }" var="idx">
-							<input type="checkbox" checked="checked" disabled="disabled">${idx.iml_lname}&nbsp;&nbsp;	
-						</c:forEach>
-					</c:if>
+					${mvo.im_skill}
 				</td>
 			</tr>
 			<tr>
@@ -110,6 +86,42 @@
 	</table>
 	<br>
 	<div>
+		<h3><b>License</b></h3>
+	</div>
+	<table style="width: 100%; margin: auto;" class="table table-striped">
+		<thead>
+			<tr>
+				<th>License Name</th>
+				<th>Date of Acquisition</th>
+				<th>Organization</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:if test="${empty liclist }">
+				<tr>
+					<td colspan="3" style="text-align: center;">
+						자격증이 없습니다.
+					</td>
+				</tr>
+			</c:if>
+			<c:if test="${not empty liclist }">
+				<c:forEach items="${liclist}" var="idx" >
+					<tr>
+						<td>
+							${idx.iml_lname }
+						</td>
+						<td>
+							${fn:substring(idx.iml_acqdate, 0 , 10)}
+						</td>
+						<td>
+							${idx.iml_organization}
+						</td>
+					</tr>
+				</c:forEach>
+			</c:if>
+		</tbody>
+	</table>
+	<div>
 		<h3><b>Experience</b></h3>
 	</div>
 	<table style="width: 100%; margin: auto;" class="table table-striped">
@@ -123,41 +135,50 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${elist}" var="idx">
-				<tr>
-					<td>${fn:substring(idx.ime_regi_date, 0, 10)}&nbsp;~&nbsp;${fn:substring(idx.ime_exit_date, 0, 10)}</td>
-					<td>
-						<fmt:parseDate value="${idx.ime_regi_date}" var="regidate" pattern="yyyy-MM-dd"/>
-						<fmt:parseNumber value="${regidate.time / (1000*60*60*24)}" integerOnly="true" var="startDate"/>
-						<fmt:parseDate value="${idx.ime_exit_date}" var="expiredate" pattern="yyyy-MM-dd"/>
-						<fmt:parseNumber value="${expiredate.time / (1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
-						
-						<c:if test="${(endDate - startDate) < 0}">
-							-
-						</c:if>
-						<c:if test="${(endDate - startDate) >= 0}">
-							<c:if test="${((endDate - startDate) /365) >= 1}">
-								<fmt:parseNumber value="${(endDate - startDate)/365}" var="years" integerOnly="true"/>
-								<fmt:parseNumber value="${((endDate - startDate) % 365)/30}" var="months" integerOnly="true"/>
-								<c:if test="${months eq 0}">
-									${years}년	
-								</c:if>
-								<c:if test="${months ne 0}">
-									${years}년  ${months}개월	
-								</c:if>
-								 
+			<c:if test="${not empty elist}">
+				<c:forEach items="${elist}" var="idx">
+					<tr>
+						<td>${fn:substring(idx.ime_regi_date, 0, 10)}&nbsp;~&nbsp;${fn:substring(idx.ime_exit_date, 0, 10)}</td>
+						<td>
+							<fmt:parseDate value="${idx.ime_regi_date}" var="regidate" pattern="yyyy-MM-dd"/>
+							<fmt:parseNumber value="${regidate.time / (1000*60*60*24)}" integerOnly="true" var="startDate"/>
+							<fmt:parseDate value="${idx.ime_exit_date}" var="expiredate" pattern="yyyy-MM-dd"/>
+							<fmt:parseNumber value="${expiredate.time / (1000*60*60*24)}" integerOnly="true" var="endDate"></fmt:parseNumber>
+							
+							<c:if test="${(endDate - startDate) < 0}">
+								-
 							</c:if>
-							<c:if test="${((endDate - startDate) /365) < 1}">
-								<fmt:parseNumber value="${((endDate - startDate) % 365)/30}" var="months" integerOnly="true"/>
-								${months}개월
-							</c:if> 							
-						</c:if>
+							<c:if test="${(endDate - startDate) >= 0}">
+								<c:if test="${((endDate - startDate) /365) >= 1}">
+									<fmt:parseNumber value="${(endDate - startDate)/365}" var="years" integerOnly="true"/>
+									<fmt:parseNumber value="${((endDate - startDate) % 365)/30}" var="months" integerOnly="true"/>
+									<c:if test="${months eq 0}">
+										${years}년	
+									</c:if>
+									<c:if test="${months ne 0}">
+										${years}년  ${months}개월	
+									</c:if>
+									 
+								</c:if>
+								<c:if test="${((endDate - startDate) /365) < 1}">
+									<fmt:parseNumber value="${((endDate - startDate) % 365)/30}" var="months" integerOnly="true"/>
+									${months}개월
+								</c:if> 							
+							</c:if>
+						</td>
+						<td>${idx.ime_coname }</td>
+						<td>${idx.ime_auth eq 0? 'Developer' : 'Manager' }</td>
+						<td>${idx.ime_roll}</td>
+					</tr>
+				</c:forEach>
+			</c:if>
+			<c:if test="${empty elist}">
+				<tr>
+					<td colspan="5" style="text-align: center;">
+						경력 사항이 없습니다.
 					</td>
-					<td>${idx.ime_coname }</td>
-					<td>${idx.ime_auth eq 0? 'Developer' : 'Manager' }</td>
-					<td>${idx.ime_roll}</td>
 				</tr>
-			</c:forEach>
+			</c:if>
 		</tbody>
 	</table>
  		<jsp:include page="../paging/paging.jsp" flush="false">

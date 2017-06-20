@@ -1,47 +1,34 @@
 var skillflag = false; // 스킬 수정 유무
 var licflag = false; // 라이센스 수정 유무
 var expFlag = false; //exp 수정 유무
-$("#fixbtn").click(function() {
-	if($("#fixSkill").css("display") == "none"){
-		$("#fixbtn").text("수정하지 않을 경우 버튼을 눌러주세요");
-		$("#fixSkill").show();
-		skillflag = true;
-		$("#skillFlag").val("1");
-	}else{
-		$("#fixbtn").text("사용가능 언어를 수정하시려면 클릭하세요");
-		$("#fixSkill").hide();
-		skillflag = false;
-		$("#skillFlag").val("0");
-	}
-});
-$("#licfixbtn").click(function() {
-	if($("#fixlic").css("display") == "none"){
-		$("#licfixbtn").text("수정하지 않을 경우 버튼을 눌러주세요");
-		$("#fixlic").show();
-		licflag = true;
-		$("#licFlag").val("1");
-	}else{
-		$("#licfixbtn").text("자격증을 수정하시려면 클릭하세요");
-		$("#fixlic").hide();
-		licflag = false;
-		$("#licFlag").val("0");
-	}
-});
-$("#expfixbtn").click(function() {
-	if($("#fixcarreers").css("display") == "none"){
-		$("#expfixbtn").text("수정하지 않을 경우 버튼을 눌러주세요");
-		$("#fixcarreers").show();
-		expFlag = true;
-		$("#expFlag").val("1");
-	}else{
-		$("#expfixbtn").text("경력을 수정하시려면 클릭하세요");
-		$("#fixcarreers").hide();
-		expFlag = false;
-		$("#expFlag").val("0");
-	}
-});
 
+var chkTa = false; //타업체선택 유무
+var liccnt = 0; //자격증 row count
+var cnt = 0; //경력 row 카운트
 
+//datepicker 설정
+$( "input[name='ime_regi_date']" ).datepicker({
+	dateFormat:'yy-mm-dd',
+    changeMonth: true, 
+    changeYear: true,
+    nextText: '다음 달',
+    prevText: '이전 달' 
+});
+$( "input[name='ime_exit_date']" ).datepicker({
+	dateFormat:'yy-mm-dd',
+    changeMonth: true, 
+    changeYear: true,
+    nextText: '다음 달',
+    prevText: '이전 달' 
+});
+//datepicker 설정
+$( "input[name='iml_acudate']" ).datepicker({
+	dateFormat:'yy-mm-dd',
+    changeMonth: true, 
+    changeYear: true,
+    nextText: '다음 달',
+    prevText: '이전 달' 
+});
 
 // logout 
 $("#logout").click(function() { //로그아웃 클릭
@@ -50,7 +37,6 @@ $("#logout").click(function() { //로그아웃 클릭
 		}
 });
 // 타업체 인력 input tag 추가 (회사명 입력)
-var chkTa = false;
 $("#conamelabel").hide();
 $("input[name='outsideperson']").hide();
 
@@ -64,6 +50,33 @@ $("select[name='im_dname']").change(function () {
 		$("input[name='outsideperson']").hide();
 		chkTa = false;
 	}
+});
+//자격증 추가
+$("#addLicense").click(function () {
+	
+	var appendhtml = '<tr>';
+	    appendhtml +=    '<td><input class="form-control" type="text" style="width: 100%;" name="iml_lname"></td>';
+	    appendhtml +=    '<td><input class="form-control" type="text" style="width: 100%;" name="iml_acudate" readonly="readonly"></td>';
+	    appendhtml +=    '<td><input class="form-control" type="text" style="width: 100%;" name="iml_organization"></td>';
+	    appendhtml +=    '<td><a class="btn btn-default">cancle</a></td>';
+	    appendhtml +='</tr>';
+	    
+	    liccnt++;
+	$("#ltb").append(appendhtml);
+	
+	//datepicker 설정
+    $( "input[name='iml_acudate']" ).datepicker({
+    	dateFormat:'yy-mm-dd',
+        changeMonth: true, 
+        changeYear: true,
+        nextText: '다음 달',
+        prevText: '이전 달' 
+    });
+});
+//자격증 삭제
+$("#ltb").on("click", ".btn-default", function() { //자격증 row 삭제 버튼
+	liccnt--;
+	$(this).parent().parent().remove();
 });
 // 경력 추가 
 var cnt = 0; //경력 row 카운트
@@ -119,10 +132,10 @@ $("#addbtn").click(function() {
 	var arrConame = []; //회사명 배열담기
 	var arrRoll = []; //역할 배열 담기
 	
-	// 체크박스 개수 확인
- 	$("input:checkbox[name='chklang']:checked").each(function() {
-		chknum++;
-	});
+	var arrLicname = []; //자격증 이름 배열담기
+	var arrAcudate = []; //자격증 취득일 배열담기
+	var arrOrg = []; // 자격증 발급처 배열담기
+	
  	//항목 null check
 	var chkpw = $.trim($("#chkpw").val());
 	var chkcpw = $.trim($("#confirmpw").val());
@@ -138,6 +151,7 @@ $("#addbtn").click(function() {
 	var detailaddress = $.trim($("#detailaddress").val()); // 상세 주소
 	var postcode = $.trim($("#postcode").val()); // 우편번호
 	var chkaddr = tempaddress + " " + detailaddress; //최종 주소
+	var chkskill = $.trim($("#skillinput").val());
 	var snum = snumF + "-" + snumE; // 주민등록번호
 	var phonenum = sphone + "-" + mphone + "-" + ephone; // 폰번
 	
@@ -158,6 +172,16 @@ $("#addbtn").click(function() {
 	});
 	$("input[name='ime_roll']").each(function () {
 		arrRoll.push($(this).val());
+	});
+	// 자격증 취득일 배열에 넣기
+	$("input[name='iml_lname']").each(function () {
+		arrLicname.push($(this).val());
+	});
+	$("input[name='iml_acudate']").each(function () {
+		arrAcudate.push($(this).val());
+	});
+	$("input[name='iml_organization']").each(function () {
+		arrOrg.push($(this).val());
 	});
 	// 이메일, 전화번호, 주민등록 번호 중복 체크
 	// 메일이 달라졌을때 체크
@@ -235,19 +259,22 @@ $("#addbtn").click(function() {
 			currDate++;
 		}
 	}
+	
+	//자격증 취득일이 현재 날짜 이후인지 체크
+	var licdatecurr = 0;
+	var licempty = 0;
+	for (var j = 0; j < liccnt; j++) {
+		if(arrAcudate[j] >= chan_val){
+			licdatecurr++;
+		}
+		if(arrLicname[j] == "" || arrAcudate[j] == "" || arrOrg[j] == ""){
+			licempty++;
+		}
+	}
 	//validation
 	var languageCheck = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z]/; // 문자열 체크
-	var formCheck = /^([1-2][0-9][0-9][0-9])-(0[0-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/; //datepick 문자입력 방지 체크
 	
-//	var expLangCheck = 0;
-//	for (var j = 0; j < cnt; j++) {
-//		if(!formCheck.test(arrSdate[j]) || !formCheck.test(arrEdate[j])){
-//			expLangCheck++;
-//		}
-//	}
 	// 주민등록 번호 유효성 체크
-//	snumF 850910
-//	snumE 1929391
 	function isValidDate(snumF, snumE) {
         try
         {
@@ -341,69 +368,32 @@ $("#addbtn").click(function() {
 		alert("주소를 정확히 입력해 주세요. 우편 번호 찾기를 클릭하여 도로 또는 지번 주소를 입력해 주세요.");
 	}else if(detailaddress == "" || detailaddress == null){
 		alert("주소를 정확히 입력해 주세요. 주소는 공백일 수 없습니다.");
-	}else if(skillflag){
-		if(chknum < 1){
-			alert("사용가능한 언어를 하나 이상 체크 해 주세요.");
+	}else if(chkskill == "" || chkskill == null){
+		alert("사용가능한 언어와 환경을 하나 이상 적어주세요. ");
+	}else if(cnt > 0 || liccnt > 0){
+		if(expEmptyChk > 0){
+			alert("경력란에 입력하지 않은 값이 있습니다. 정확하게 입력해 주세요");
+		}else if(currDate > 0){
+			alert("경력시작 또는 종료일은 현재 날짜 보다 이전 날짜 이어야 합니다.");
+		}else if(errTerm > 0){
+			alert("경력 시작일은 종료일 보다 늦을 수 없습니다.");
+		}else if(expErrChk > 0){
+			alert("중복된 경력 기간이 존재합니다. 정확하게 입력 해 주세요.");
+		}else if(licdatecurr > 0){
+			alert("자격증 취득날짜가 현재 날짜보다 이후입니다. 정확히 입력해 주세요.");
+		}else 	if(licempty > 0){
+			alert("자격증란에 입력하지 않은 값이 있습니다. 정확하게 입력해 주세요.");
 		}else{
-			if(cnt > 0){
-				if(expEmptyChk > 0){
-					alert("경력란에 입력하지 않은 값이 있습니다. 정확하게 입력해 주세요");
-				}else if(currDate > 0){
-					alert("경력시작 또는 종료일은 현재 날짜 보다 이전 날짜 이어야 합니다.");
-				}else if(errTerm > 0){
-					alert("경력 시작일은 종료일 보다 늦을 수 없습니다.");
-				}else if(expErrChk > 0){
-					alert("중복된 경력 기간이 존재합니다. 정확하게 입력 해 주세요.");
-				}else{
-					if(confirm("수정 하시겠습니까?")){
-						$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
-					}
-				}
-			}else if(cnt == 0){
-				if(expFlag){
-					if(confirm("경력사항을 모두 삭제합니다. 계속 진행하시겠습니까? ")){
-						$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
-					}
-				}else{
-					if(confirm("수정 하시겠습니까? ")){
-						$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
-					}
-				}
-
-			}else{
-				alert("Page Err, 관리자에게 문의하세요.");
+			if(confirm("수정 하시겠습니까?")){
+				
+				$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
 			}
 		}
-	}else if(!skillflag){
-		if(cnt > 0){
-			if(expEmptyChk > 0){
-				alert("경력란에 입력하지 않은 값이 있습니다. 정확하게 입력해 주세요");
-			}else if(currDate > 0){
-				alert("경력시작 또는 종료일은 현재 날짜 보다 이전 날짜 이어야 합니다.");
-			}else if(errTerm > 0){
-				alert("경력 시작일은 종료일 보다 늦을 수 없습니다.");
-			}else if(expErrChk > 0){
-				alert("중복된 경력 기간이 존재합니다. 정확하게 입력 해 주세요.");
-			}else{
-				if(confirm("수정 하시겠습니까?")){
-					$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
-				}
-			}
-		}else if(cnt == 0){
-			if(expFlag){
-				if(confirm("경력사항을 모두 삭제합니다. 계속 진행하시겠습니까? ")){
-					$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
-				}
-			}else{
-				if(confirm("수정 하시겠습니까? ")){
-					$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
-				}
-			}
-		}else{
-			alert("Page Err, 관리자에게 문의하세요.");
+	}else if(cnt == 0 ){
+		if(confirm("경력사항이 없습니다. 계속 진행 하시겠습니까?")){
+			$("#frm").attr({"target" : "_self" , "action" : "updateWorker"}).submit();
 		}
-	}
-	else{
-		alert("페이지 오류. 관리자에게 문의하세요");
+	}else{
+		alert("Page Err, 관리자에게 문의하세요.");
 	}
 });
