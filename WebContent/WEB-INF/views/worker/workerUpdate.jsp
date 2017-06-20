@@ -34,6 +34,7 @@
 	<input type="hidden" name="im_idx" value="${mvo.im_idx}">
 	<!--받아온 경력 size  -->
 	<input type="hidden" id="expsize" value="${fn:length(elist)}">
+	<input type="hidden" id="licsize" value="${fn:length(liclist)}">
 	<div class="layer" style="margin-left: 30%;">
 		<div class="addform" style="float: left;">
 		<h2><b>Information</b></h2>

@@ -3,8 +3,8 @@ var licflag = false; // 라이센스 수정 유무
 var expFlag = false; //exp 수정 유무
 
 var chkTa = false; //타업체선택 유무
-var liccnt = 0; //자격증 row count
-var cnt = 0; //경력 row 카운트
+var liccnt = $("#licsize").val(); //자격증 row count 
+var cnt = $("#expsize").val(); //경력 row 카운트
 
 //datepicker 설정
 $( "input[name='ime_regi_date']" ).datepicker({
