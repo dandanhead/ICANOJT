@@ -39,33 +39,7 @@
 				<div>
 					<label>* Language AND Environment</label>
 					<br>
-					<table>
-						<tr>
-							<td><input type="checkbox" value="Java" name="chklang" class="chklang">&nbsp;Java&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="jQuery" name="chklang" class="chklang">&nbsp;jQuery&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="JSP" name="chklang" class="chklang">&nbsp;JSP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="Ajax" name="chklang" class="chklang">&nbsp;Ajax&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="PHP" name="chklang" class="chklang">&nbsp;PHP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox" value="CSS" name="chklang" class="chklang">&nbsp;CSS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="HTML" name="chklang" class="chklang">&nbsp;HTML&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="C" name="chklang" class="chklang">&nbsp;C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="C++" name="chklang" class="chklang">&nbsp;C++&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="C#" name="chklang" class="chklang">&nbsp;C#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox" value="Ruby" name="chklang" class="chklang">&nbsp;Ruby&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="Object C" name="chklang" class="chklang">&nbsp;Object C&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="Swift" name="chklang" class="chklang">&nbsp;Swift&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="Spring" name="chklang" class="chklang">&nbsp;Spring&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="Oracle" name="chklang" class="chklang">&nbsp;Oracle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-						</tr>
-						<tr>
-							<td><input type="checkbox" value="MsSql" name="chklang" class="chklang">&nbsp;MsSql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<td><input type="checkbox" value="MySql" name="chklang" class="chklang">&nbsp;MySql&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-						</tr>
-					</table>
+					<input type="text" id="skillinput" class="form-control" style="width: 40%; text-transform: uppercase;">
 				</div>
 				<br>
 				<div>
@@ -204,9 +178,14 @@ function removeChar(event) {
 		event.target.value = event.target.value.replace(/[^0-9]/g, "");
 };
 
+//스킬 입력시 영어 대문자만 허용,콤마로 구분 , skillinput
+$("#skillinput").keyup(function() {
+	$(this).val($(this).val().toUpperCase());
+	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_<>@\$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
+});
+
 $("#addProjectBtn").click(function() {
 	//validation
-	var chknum = 0; //체크박스 갯수 확인
 	var pname = $.trim($("#pname").val()); // 프로젝트명
 	var clientname = $.trim($("#clientname").val()); // 고객사
 	var postcode = $.trim($("#postcode").val()); //우편번호 
@@ -214,6 +193,7 @@ $("#addProjectBtn").click(function() {
 	var detailaddress = $.trim($("#detailaddress").val()); // 상세주소
 	var charger = $.trim($("#charger").val()); // charge
 	var startdate = $.trim($("#startdate").val()); //start date
+	var chkskill = $.trim($("#skillinput").val()); //skill and enviroment
 	//////////////////
 	// null 허용 value
 	var prjtcontent = $.trim($("#prjtcontent").val()); //상세내용
@@ -221,11 +201,6 @@ $("#addProjectBtn").click(function() {
 	var expectdate = $.trim($("#expectdate").val()); // expect end date
 	var projectdoc = $.trim($("#projectdoc").val()); //파일주소.
 	
-	
-	// 체크박스 개수 확인
- 	$("input:checkbox[name='chklang']:checked").each(function() {
-		chknum++;
-	});
 	
 	if(pname == "" || pname == null){
 		alert("프로젝트명을 입력해 주세요.");
@@ -239,8 +214,8 @@ $("#addProjectBtn").click(function() {
 		alert("책임자를 입력해 주세요.");
 	}else if(startdate == "" || startdate == null){
 		alert("프로젝트 시작일은 반드시 입력해야 합니다.");
-	}else if(chknum == 0){
-		alert("사용 기술을 하나 이상 체크 해야합니다.");
+	}else if(chkskill == "" || chkskill == null){
+		alert("사용 언어를 한 가지 이상 입력해 주세요.");
 	}else{
 		//call controller
 		$("#frm").attr({"target" : "_self" , "action" : "addProjectAf"}).submit();

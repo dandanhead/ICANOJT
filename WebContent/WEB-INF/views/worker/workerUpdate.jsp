@@ -34,6 +34,7 @@
 	<input type="hidden" name="im_idx" value="${mvo.im_idx}">
 	<!--받아온 경력 size  -->
 	<input type="hidden" id="expsize" value="${fn:length(elist)}">
+	<input type="hidden" id="licsize" value="${fn:length(liclist)}">
 	<div class="layer" style="margin-left: 30%;">
 		<div class="addform" style="float: left;">
 		<h2><b>Information</b></h2>
@@ -253,7 +254,7 @@ $("#findaddr").click(function() {
 //대문자 영어 대문자
 $("#skillinput").keyup(function() {
 	$(this).val($(this).val().toUpperCase());
-	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
+	$(this).val($(this).val().replace(/[\{\}\[\]\/?.;:|\)*~`!^\-_<>@\$%&\\\=\(\'\"]|[가-힣]|[ㄱ-ㅎ]|[ㅏ-ㅣ]|[0-9]/gi,""));
 });
 </script>
 <script type="text/javascript" src="js/updateworkerjQuery.js?version=20170611232354341"></script>
