@@ -27,9 +27,7 @@ public class WorkerServiceImpl implements WorkerService {
 		return workerservice;
 	}
 	
-	WorkerDAO wdao = WorkerDAO.getInstance();
-	
-	
+	private WorkerDAO wdao = WorkerDAO.getInstance();
 	
 	@Override
 	public boolean chkDuplicate(MemberVO mvo) {

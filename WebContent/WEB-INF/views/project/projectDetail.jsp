@@ -1,5 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<fmt:requestEncoding value ="utf-8"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,82 +17,51 @@
 <div id="notice" class="layer">
 	<hr>
 	<div id="pagetitle" style="width: 20%;">
-		<h4><b>Workers Management</b></h4>
+		<h4><b>Project Management</b></h4>
 	</div>
 	<hr> <!-- 공통 css -->
 </div>
 <div class="layer">
-	<div class="contentsDetail">
+	<div class="contentsDetail" style="width: 60%; margin: auto;">
 		<div>
 			<label>Project Name</label>
-			<input type="text" class="form-control" readonly="readonly" value="Amore">
+			<input type="text" class="form-control" readonly="readonly" value="${pvo.ipl_pname}">
 		</div>
 		<div>
 			<label>Client</label>
-			<input type="text" class="form-control" readonly="readonly" value="AmorePercipic">
+			<input type="text" class="form-control" readonly="readonly" value="${pvo.ipl_client}">
 		</div>
 		<div>
 			<label>Language AND Environment</label>
-				<textarea rows="3" cols="100%;" class="form-control" style="resize: none;" readonly="readonly">JAVA, jQuery, Spring, Ajax, Mybaits </textarea>
+			<input type="text" class="form-control" readonly="readonly" value="${pvo.ipl_skill }">
 		</div>
 		<div>
 			<label>Content</label>
-			<textarea rows="3"  class="form-control" style="resize: none;" readonly="readonly">Amore Project in Seoul</textarea>
+			<textarea rows="3"  class="form-control" style="resize: none;" readonly="readonly">${pvo.ipl_content}</textarea>
 		</div>
 		<div>
 			<label>Location</label>
-			<input type="text" class="form-control"  readonly="readonly" value="Seoul">
+			<input type="text" class="form-control"  readonly="readonly" value="(${pvo.ipl_postcode})${pvo.ipl_address}${pvo.ipl_detailaddr}">
 		</div>
 		<div>
 			<label>Charge</label>
-			<input type="text" class="form-control"  readonly="readonly" value="Kim gil-dong">
+			<input type="text" class="form-control"  readonly="readonly" value="${pvo.ipl_charge}">
 		</div>
 		<div>
 			<label>Start Date</label>
-			<div class="row">
-			  <div class="col-xs-3">
-			  	<input type="text" class="form-control" readonly="readonly" value="2017">
-			  </div>
-			  <div class="col-xs-3">
-			    <input type="text" class="form-control" readonly="readonly" value="04">
-			  </div>
-			  <div class="col-xs-3">
-			   <input type="text" class="form-control" readonly="readonly" value="01">
-			  </div>
-			</div>
+			<input type="text" class="form-control" readonly="readonly" value="${fn:substring(pvo.ipl_sdate, 0 , 10)}" style="width: 20%;">
 		</div>
 		<div>
 			<label>Expect End Date</label>
-			<div class="row">
-			  <div class="col-xs-3">
-				<input type="text" class="form-control" readonly="readonly" value="2017">
-			  </div>
-			  <div class="col-xs-3">
-			    <input type="text" class="form-control" readonly="readonly" value="08">
-			  </div>
-			  <div class="col-xs-3">
-			  	<input type="text" class="form-control" readonly="readonly" value="01">
-			  </div>
-			</div>
+			<input type="text" class="form-control" readonly="readonly" value="${fn:substring(pvo.ipl_eptdate, 0 , 10)}" style="width: 20%;">
 		</div>
 		<div>
 			<label>End Date</label>
-			<div class="row">
-			  <div class="col-xs-3">
-			    <input type="text" class="form-control" readonly="readonly" value="-">
-			  </div>
-			  <div class="col-xs-3">
-			  	<input type="text" class="form-control" readonly="readonly" value="-">
-			  </div>
-			  <div class="col-xs-3">
-			  	<input type="text" class="form-control" readonly="readonly" value="-">
-			  </div>
-			</div>
+			<input type="text" class="form-control" readonly="readonly" value="${fn:substring(pvo.ipl_edate, 0 , 10)}" style="width: 20%;">
 		</div>
 		<div>
 			<label>Document</label>
-			<input type="text" class="form-control" value="fileName" readonly="readonly">
-			<button type="button" class="btn btn-default">Download</button>
+			<input type="button" onclick="fileDowns('${pvo.ipl_idx}','${pvo.ipl_doc}')" value="${pvo.ipl_doc}">
 		</div>
 		<br>
 		<div >
@@ -189,6 +161,10 @@
 		</nav>
 	</div>
 </div>
+<form name="filedownForm" action="filedown" method="post">
+	<input type="hidden" name="filename"  value=""/>
+	<input type="hidden" name="idx"  value=""/>
+</form>
 </body>
 <script type="text/javascript">
 	$(".delmem").click(function() {
@@ -205,5 +181,14 @@
 				location.href="logout.do";
 			}
 	});
+	
+	function fileDowns(idx, filename) {
+		alert(filename);
+		alert(idx);
+		var doc = document.filedownForm;
+		doc.filename.value = filename;
+		doc.idx.value = idx;
+		doc.submit();
+	}
 </script>
 </html>

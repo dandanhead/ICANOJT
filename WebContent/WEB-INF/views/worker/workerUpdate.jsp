@@ -132,7 +132,7 @@
 						<c:forEach items="${liclist}" var="idx">
 				 		<tr>
 						    <td><input class="form-control" type="text" style="width: 100%;" name="iml_lname" value="${idx.iml_lname}"></td>
-						    <td><input class="form-control" type="text" style="width: 100%;" name="iml_acudate" readonly="readonly" value="${idx.iml_acqdate}"></td>
+						    <td><input class="form-control" type="text" style="width: 100%;" name="iml_acudate" readonly="readonly" value="${fn:substring(idx.iml_acqdate, 0 , 10)}"></td>
 						    <td><input class="form-control" type="text" style="width: 100%;" name="iml_organization" value="${idx.iml_organization}"></td>
 						    <td><a class="btn btn-default">cancle</a></td>
 	  					 </tr> 

@@ -1,5 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<fmt:requestEncoding value ="utf-8"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,8 +41,9 @@
 				<br>
 				<div>
 					<label>* Language AND Environment</label>
+					<div style="color: red;">사용가능 언어 및 환경은 영어로만 입력 하실 수 있으며 comma(,) 로 구분합니다.</div>
 					<br>
-					<input type="text" id="skillinput" class="form-control" style="width: 40%; text-transform: uppercase;">
+					<input type="text" id="skillinput" class="form-control" style="width: 40%; text-transform: uppercase;" name="ipl_skill">
 				</div>
 				<br>
 				<div>
@@ -218,7 +222,9 @@ $("#addProjectBtn").click(function() {
 		alert("사용 언어를 한 가지 이상 입력해 주세요.");
 	}else{
 		//call controller
-		$("#frm").attr({"target" : "_self" , "action" : "addProjectAf"}).submit();
+		if(confirm("추가 하시겠습니까?")){
+			$("#frm").attr({"target" : "_self" , "action" : "addProjectAf"}).submit();	
+		}
 	}
 });
 </script>

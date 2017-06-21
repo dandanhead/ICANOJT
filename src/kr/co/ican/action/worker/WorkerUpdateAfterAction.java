@@ -171,7 +171,6 @@ public class WorkerUpdateAfterAction extends HttpServlet{
 			}
 			
 			//url
-			System.out.println("infoFlag = " + infoFlag + " , expFlag = " + expFlag + " , expdel = " + expdel + " , licdel = " + licdel + " , licFlag = " + licFlag);
 			
 			if(!infoFlag || !expFlag || !expdel || !licdel || !licFlag){
 				url = "goError.do";
